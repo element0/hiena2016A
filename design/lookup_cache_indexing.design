@@ -1,0 +1,39 @@
+Lookup cache indexing.
+
+here's the example:
+
+
+lookup string --> string cache --> string sn
+
+
+string sn --> access path --> result access path
+
+
+
+
+access path : ()
+
+    string sn --> branch list --> result access path
+
+;
+
+
+branch list := btree
+: ()
+    string sn --> btree --> result access path
+;
+
+btree node :() 
+    string sn ~ btree node/key[*] 
+{
+
+}
+    ;
+
+
+btree := btree node ;
+btree node := {::   ( btree node (key, value)){1,5}( btree node )  ::} ;
+
+key := value ;
+
+value := string | number ;

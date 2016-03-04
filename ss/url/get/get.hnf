@@ -1,0 +1,16 @@
+
+
+%%
+%%
+
+get := @url
+
+typedef struct callbackops {
+    void *(*lookup)(void *src, const char *);
+    void *(*add_to_map)(void *dst, void *mapob);
+}cbackops;
+
+void *
+make_derivative(void *src, void *dst, cbackops *ops) {
+
+}

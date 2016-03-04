@@ -1,0 +1,36 @@
+
+== DESIGN: scannerserver ==
+%empty
+
+contrasted to a dpak, a ss can't be passed directly as bytecode from one host to another.
+a dpak is meant to be global no matter what node it resides on.
+a ss is intended to be run from a host context.
+
+ss generation files -- such as hbnf -- should be transferred host to host.
+they must compile relative to their host and be loaded relative to their host.
+because of this, they shouldn't be run by other hosts.
+
+--------
+
+== DESIGN: filter  version( flex )  ==
+
+filter  := yyscanner_t
+yyextra := hsp
+YY_INPUT { ... dsread(yyextra->dpakstream) ... }
+
+a filter has an input dpakstream object.
+a filter has a yyscanner object.
+a filter uses dpakstream dsread() calls.
+
+a filter has a wrapper function filter->read(dpakstream)
+    the wrapper function tests the current fpos of the dpakstream
+    versus the curren fpos of the filter->fpos
+
+    dpakstream->fpos vs. filter->fpos
+        less-than
+	    read from frag buffer until dpakstream->fpos == filter->fpos
+	==
+	    filter->parse until filter->fpos == dpakstream->fpos + size * nmemb;
+            { filter->fpos follows virtual file position after filter generates fragments }
+
+--------

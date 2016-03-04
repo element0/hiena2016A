@@ -1,0 +1,21 @@
+COSMOSPROJ/ss/url/
+
+cosmos scanner-server design
+
+FILE LAYOUT:
+/usr/local/lib/cosmos/
+    host/
+	file.ss
+	https.ss
+	sftp.ss
+	rsync.ss
+	ssh.ss
+    ss/
+	ox.ss
+	rmk.ss
+	hna.ss
+	fu.ss
+	div.ss
+	html.ss
+	htmo.ss
+

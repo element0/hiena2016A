@@ -1,0 +1,23 @@
+string cache design.
+
+
+objects:
+    string cache {
+	next serial number;
+	serial index;
+	hash table;
+    }
+
+functions:
+
+lookup string --> string to serial number () --> string sn
+{
+    lookup string --> hash() --> string hash;
+    string hash --> check if in hash table() --> string sn | 0;
+        case 0:
+            string cache --> assign next serial number () --> string sn;
+	    string hash, sn --> put into hash table();
+	    string sn, lookup string --> save string into serial index();
+
+    return string sn;
+}

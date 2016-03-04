@@ -1,0 +1,114 @@
+== DESIGN: addr_t ==
+
+an address is relative to a server.
+its format should be determined by a server.
+at the very least we need a pointer and a size to store the address.
+the server can put anything into that space.
+
+server and address should be set at the same time for a dpak.
+it would be difficult to determine server from address
+for these reasons:
+
+	host_mem  can use "ptr" and "size" to store a direct location in memory.
+	host_file can use "ptr" and "size" to store an indirect address of a file on disk.
+
+	the actual address size for host_mem is 8 bytes of "ptr"
+	the actual address size for host_file is "size" bytes _starting_ at "*ptr"
+
+	"ptr" can safely be read and compared as a string when relative to host_file
+	"ptr" can't be read or compared as a string when relative to host_mem -- segfault
+
+	we could put a flag into addr_t to determine server type
+	but this would be pointless as we can just set dpak's server and reference that.
+
+
+
+--------
+
+== DESIGN: dpakserver ==
+
+the dpakserver might be more appropriately named "resource server" or "resource feed".
+
+looking from the point of view of a network
+each host on the network has a set of resources
+examples are:
+
+   memory
+   filesystems
+   network
+   input/display devices
+
+dpakservers are host relative
+there only need be one dpakserver per resource - or subresource
+
+   memory->serverops
+   filesystem
+       file->serverops
+       dir->serverops
+   network
+       http->serverops
+       ssh->serverops
+
+
+a dpak's address and server can be visualized like a URL
+which URL is internal to hiena - not used by the user directly
+
+ala
+	dpak addr = host:resource:addr
+
+	dpak
+	    host   = host
+	    server = resource
+	    addr   = addr
+
+dpak addresses are a level above URL's.  A URL is a net address.
+a memory address just uses a integer value.
+a file address uses a path string value.
+
+	bangfish:http:www.raygan.com/cosmos
+	bangfish:mem:000FA8E1
+	bangfish:file:/home/raygan/cosmos.tar
+	bangfish:dir:/home/raygan/cosmos
+
+dpakserver executible binaries can be built-in or modular
+however the core module identities can't be changed.
+
+	mem
+	file
+	dir
+	http
+	ssh
+
+modular binaries would seem easier to maintain so that's my choice.
+
+	/usr/lib/hiena/server/*.so
+
+
+using dpak addresses means we can bind several resources together
+even from separate hosts.  a dpak can only have one address,
+but dpaks can be clustered.  So we create a dpak for each address,
+bind them together in a cluster and access the cluster handle 
+as if it were a single dpak.
+
+sync is handled at the cluster member level. an io operation is 
+performed with each member's server.  sync state is recorded in the dpak.
+and if the member's host can't be reached, io operations are queued.
+an io queue can be shared between unreachable hosts.
+
+	dpak
+	    syncstate
+	    ioq
+
+
+
+
+--------
+
+== API: dpakserver ==
+
+/* these apply uniformly to all servers: mem, file, dir, http, ssh, etc. */
+
+FILE *(*open)( addr_t *addr, const char *mode, dpakserver *server );
+boundslen_t (*read)(FILE *, void *buf, boundslen_t size);
+
+--------

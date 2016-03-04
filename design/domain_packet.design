@@ -1,0 +1,14 @@
+domain packet design.
+
+objects:
+
+    domain packet {
+	server();
+	addr;
+	statbuf;
+	filter();
+	scanner();  // from access path cosm types
+
+	domain map;
+	child list;
+    }

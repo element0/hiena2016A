@@ -1,0 +1,490 @@
+== DOCUMENT: ppak.design  date ( Nov 26, 2015 ) ==
+--------
+
+== OBJECT CHART: dpak  ==
+
+
+dpak
+    addr
+    server .dpakserver
+    filter .scannerserver
+
+dpak
+    val .cell
+	cell[*]
+	    frag[*]
+		buf .void
+		len .size_t
+		addr
+dpak
+    key .scannersig
+
+dpak
+    filter
+    fstate[*]
+
+dpak
+    map
+        mapn[*]
+	    mapo[*]
+	        (bounds.axis[*].next)mapo
+	        (bounds.axis[*].next)mapn
+
+addr
+    ptr  .void*
+    size .size_t
+    bounds
+
+writecell.cell
+    frag
+        buf .void
+	len .size_t
+	addr
+        (prev,next)frag
+        (prev,next)cell
+
+
+
+cell
+    frag[*]
+    cell[*]
+    bounds
+    (prev,next)cell
+    (undo,redo)cell
+
+
+
+
+mapn
+    bounds
+
+mapo
+    bounds
+
+
+bounds
+    axis[*]
+        offset
+	len
+
+hpat
+    buf .void
+    len .off_t
+
+--------
+
+== DESIGN: vlan: cosmos vlan and hiena dpak ==
+
+a cosm creates a vlan using device settings
+
+.cosm/
+   devices/
+      iph
+      bangbook
+      flyboy
+
+within a hienafs mount there may be a number of vlans represented.
+each vlan gets a number relative to the mount
+much in the same way that a file gets an inode.
+
+within each vlan there are a number of nodes
+each node gets a number relative to the vlan.
+
+all dpak domains which fall under the hierarchy of each cosm
+have those vlan nodes available to store data.
+
+but additionally, cosmos access paths - analgous to traditional
+file system paths - may link from one cosm into another.
+in this case it is expected that both cosm-relative vlans
+will be active to the same dpak.
+
+this is achieved by using dpak clusters.
+
+each dpak can have only one vlan-node pair.
+a cluster of dpaks, each with their own vlan-node pair
+can be bound together under a single handle dpak.
+reads and writes to the handle will propogate through
+all cluster nodes.  and thereby propogate to each
+respective vlan-node.  The cluster binding must be updated
+each time the path-link is accessed from either cosm.
+
+it stands to reason that updating the cluster
+from the pov of one cosm's subpath
+cannot alter the participation of individual vlan-nodes
+of another cosm.  the only thing that would alter the
+content of the other cosm would be regular file operations.
+
+vlan participation is the perogative of the cosm.
+
+
+
+
+--------
+
+
+
+== DESIGN: parse packet ==
+
+parse packet, domain packet, domain inode
+these are all names I've been throwing about for this entity
+
+parse packet because the parser works with these atoms.
+
+packet because it gets passed around
+in an information transport kind of way between subsystems.
+
+domain packet because the packet represents a bounded domain of data.
+
+domain inode because this structure is an information node
+containing information about the bounded domain of data is located
+and how to access that data.
+
+
+---
+common usage defines:
+
+an inode is a file-system component.
+an inode keeps a record of where a file is located on a medium.
+or an inode keeps a record of where a directory is located on a medium.
+
+a packet is a transport object.
+
+a file is a bounded domain of data within a file-system.
+and is expected not to have a directory structure.
+
+a directory is a file-system component
+which allows files to be organized as leaves on a directory-tree.
+it is not expected to contain anything other than directory data.
+
+
+I define:
+
+a domain is a bounded set of data that can be recorded on a medium.
+a domain may occur inside another domain.
+domains may overlap.
+
+a data point is any identifyable point inside a domain.
+
+a domain inode is a file-systme component.
+a domain inode keeps a record of where a domain is located on a medium.
+
+an access path element is a file-system component.
+an access path element keeps a pointer to a domain inode.
+a string of access path elements, act as a directory tree
+to locate a domain at the final element.
+
+
+merging the ideas:
+
+a file is a bounded domain located on a medium.
+files may contain other files.
+files may overlap.
+
+a directory is a list of directories or files.
+a directory may be organizational, listing only other directories.
+a directory may be addressive, listing locations inside files.
+a directory may be both, including directories or locations.
+
+distinguish between location and address.
+a path of directory components followed by a filename is an address.
+a location is a unique data point inside a file or medium.
+a location can be reached by several addresses.
+
+a domain packet locates a file
+a axnode locates a directory
+
+--------
+
+== DESIGN: dpakstream API ==
+
+
+
+--------
+
+== DESIGN: dpakstream ==
+
+    /* OVERALL DESIGN: 
+
+       server design: server takes address, returns data at ptr
+       			seekable, contiguous datapoints
+       filter design: filter cannot take address directly,
+       			relies on data from server given address
+			not seekable,
+			is atomic, re-entrant,
+			parses data contiguously from first datapoint,
+			can be paused and re-entered,
+			or can be restarted,
+			cannot be arbitrarily addressed,
+			returns fragmap, with or without a buffer.
+       dpakstream design: takes a dpak, returns data at ptr
+                        seekable, contiguous datapoints
+			relies on fragmap, with or without buffer
+			relies on server via fragmap - which provides addresses to server
+       filter savepoints:
+       			filter "savepoints" can allow arbitrary
+			chunks to be re-filtered based on request bounds
+			savepoints should be aligned to fragmap
+
+	READ PROCESS:
+
+	Quite simply a bounded area is requested, and a pointer to a memory
+	address supplied.  The dsread subroutine must determine whether said
+	bounded area is inside domain: the atomic filter must parse the entire
+	output from the server until the filter's output fills the bounded
+	request area.  (A filter savepoint map, can optimize that a little.)
+	At which point the dsread subroutine can copy data from
+	the bounded area to the memory address.
+
+	The dsread subroutine is seekable.  The atomic filter's output is
+	cached in two forms, firstly a map of addresses meaningful to the
+	server, and secondly a data buffer.  The data buffer, or portions
+	thereof, can be released, but the map must be kept - if the map is
+	dropped, then the filter must restart all the way back at the head of
+	the server's response to the dpak address.  (The filter map can contain
+	filter savepoints which allow restarting midstream.)
+
+	And before any of this is performed we should check sync with dpak's
+	underlier, refresh if necessary and lock dpak for read.
+
+	WRITE PROCESS:
+
+	A write mode must be explicitly or implicitly determined:
+		Append, Truncate, Selective Overwrite, Selective Replace,
+		Selective Insert
+	
+	Writing must be designed within the context of Data Recovery.  Since
+	writing is to blame for Data Obliteration...
+
+	Data Recovery - the undo mechanism:
+	The entire dpak domain is contained in a cell.  The cell can be filled
+	by subordinate cells.  Each cell is part of an undo-stack of cells.
+
+	(An access path can only refer to a currently selected state
+	and cannot refer to an unselected state.  Ie. cross references will not
+	link to old data.)
+
+	Each cell can be filled by other subordinate, stacked cells.
+
+	Cells represent changes.  Changes are not created by reading but are
+	created by writing.  Cells are created by writing.
+
+	Back to the write process:
+	A write must begin with a payload cell -- the data to write,
+	encapsulated within a cell.
+
+	A write destination and a write mode: the destination is a bounded
+	area within a dpak's domain.  The write mode as outlined above, can be
+	append, truncate, selective overwrite, selective replace, or selective
+	insert.  Appending, appends the payload to an extremity of the existing
+	domain cell.  Truncate replaces the entire contents of the domain cell.
+	
+	Selective overwrite creates a new subordinate cell containing a bounded
+	destination area, **Exactly the same size as the payload**, replaces
+	the subordinate with the payload and adds the subordinate to the
+	payload's stack.  
+
+	Selective replace creates a new subordinate cell containing a bounded
+	destination area, **Not necessarily the same size as the payload**,
+	replaces the subordinate with the payload and adds the subordinate to
+	the payload's stack.
+
+	Selective insert identifies which cells need to be split to create an
+	insert point, creates a mediary cell around those cells, clones the
+	mediary cell, splits the subordinate cells and inserts the payload
+	into the split.  The cloned mediary cell is added to the mediary's
+	undo stack.
+
+	The filter must be approached first with one of those write requests.
+	It must determine whether a filter stream fragment will be affected.
+	It must validate whether the write will be legal -- acording to its
+	own rules.  If it accepts the write request it will create a filter
+	stream fragment.  And then it will format its own write request for
+	the dpakserver.  This next write request may be a modified version
+	of the original write request - per filter's internal filtering.
+
+	The dpakserver is then approched with this - possibly modified -
+	write request from the filter.  The request is similarly presented
+	encapsulated in a cell.  The dpakserver will then validate the request
+	according to its own internal rules and will determine whether the
+	exact write function can be performed (insert, overwrite, etc.)
+
+    	So the chain continues down the dpak tree until we reach one of the 
+	host level dpakservers which confirms a write to its medium -- or
+	returns an error.  Once confirmation is achieved, the chain of waiting
+	dpakstreams can finalize their filter stream maps and object maps.
+	The write has been made complete and durable.
+
+	API:
+
+	Each layer in the dpakstream has a similar API.
+
+		dswrite_append()
+    		dswrite_insert()
+    		dswrite_overwrite()
+    		...
+
+    		filter->write_append()
+    		filter->write_insert()
+    		filter->write_overwrite()
+    		...
+
+		server->write_append()
+    		server->write_insert()
+    		server->write_overwrite()
+    		...
+
+	They each use the same interface for preparing write cells.
+
+		dscell_encapsulate()
+    		...
+	
+	
+
+     */
+
+
+
+
+--------
+
+== parse packet data source ==
+
+
+every parse packet has a data source
+
+the source is expressed as an address, a parent, and an access function (or set of funcs).
+
+set_source(for_ob, addr, par, accessor);
+auto_detect_accessor(addr, par);
+
+
+example.
+
+targ = new_ppak();
+
+host = determine_local_host();
+
+set_source(targ, "local/file/main.txt", host);
+
+parse(targ, some_scannerset){
+    targ->val->fp = targ->src->open(targ->src->addr);
+    buf = read(targ->val->fp);
+    set_map(targ->key, targ->val->location, targ->val->buf);
+    child = new_child(targ);
+    set_map(child->key, child->val->location, NULL); // NULL buf means use parent
+    set_source(child, child->val->location, targ->srv);
+}
+
+--------
+
+== parse packet data server ==
+
+serves data from a parse packet.
+
+FILE * open(addr);
+	// addr is expected to be inside parse packet's domain.
+	// the very first parse packet in the chain
+	// is a HOST parse packet
+	// who's domain is anything the host has priviledge to
+	// which includes the internet, and whatever file systems are mounted
+	// in that case an addr in the HOST domain can almost be anything.
+			
+the data server implements a set of IO functions
+which are accessed through the FILE object
+
+--------
+
+== host parse packet ==
+
+a tree of parse packets, should have at least one host parse packet
+at the root. it's domain is the local host.  and it can read and write
+to the filespace, memory and network.
+
+a host parse packet is a virtual computer.
+
+in the context of a cascading operating system
+any level of hierarchy could have a host parse packet for that hierachy.
+virtualizing a set of system resources.
+
+my goal is to restrict resources to flow through the tree from root,
+   and to allow user code to run in a sandbox at any hierarchy within
+   that tree.  
+
+the whole point of the tree is to isolate meaninful branches of data
+from one another so their behavior can vary from one another
+according to their content and purpose.
+
+
+--------
+
+
+== FUNCTIONS: parse packet management ==
+
+. create
+. cleanup		-- this cleans up a single parse packet and its data
+. take out the garbage	-- this cleans up all packets and data
+
+
+--------
+
+
+
+
+
+== FUNCTIONS: object map system ==
+
+--------
+
+
+
+
+== OBJECTS: object map ==
+
+positional node
+    first map object (parse packet)
+
+--------
+
+== OBJECTS: directory of parse packets ==
+
+parse packet directory
+    first directory entry
+
+directory entry
+    parse packet
+    next directory entry
+
+--------
+
+
+== OBJECT: parse packet ==
+
+parse packet
+    -- membership information
+    parent object (parse packet)
+    -- group formation information
+    next union member (parse packet)
+    next derivative (parse packet)
+    next alternative (parse packet)
+    undo state (parse packet)
+    -- sub domain
+    stream value
+    parent backed? flag
+    address in parent object
+    opened stream to read from parent object
+    -- as map object
+    parent scannerserver's scanner library entry
+    this object's grammar rule id name
+    this object's grammar rule unique global digital signature
+    link to next consecutive map object (parse packet)
+    link to next consecutive positional node
+    link to next aligned map object (parse packet)
+    -- as map
+    first positional node
+    -- children
+    first child (parse packet)
+    
+--------
+
+== END DOCUMENT: ppak.design ==
+--------

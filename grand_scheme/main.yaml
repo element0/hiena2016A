@@ -1,0 +1,92 @@
+# hiena and cosmos main overview document
+---
+project : hiena and cosmos ( with a little fudge )
+core_files_list :
+    - /bin/
+    - /bin/cosmosfs
+    - /bin/fudge
+    - /bin/hiena
+    - /etc/
+    - /etc/cosmosfs.conf
+    - /usr/
+    - /usr/lib/
+    - /usr/lib/cosmosfs/
+    - /usr/lib/cosmosfs/bin/hc	# hiena compiler
+    - /usr/lib/cosmosfs/bin/fc	# fudge compiler
+    - /usr/lib/cosmosfs/rql/fudgeql.so	# access path query language interpreter
+    - /usr/lib/cosmosfs/dpserver/
+    - /usr/lib/cosmosfs/dpserver/args.so
+    - /usr/lib/cosmosfs/dpserver/envar.so
+    - /usr/lib/cosmosfs/dpserver/shvar.so
+    - /usr/lib/cosmosfs/dpserver/file.so
+    - /usr/lib/cosmosfs/dpserver/https.so
+    - /usr/lib/cosmosfs/dpserver/ssh.so
+    - /usr/lib/cosmosfs/dpserver/membuf.so
+    - /usr/lib/cosmosfs/dpserver/dpak.so
+    - /var/
+    - /var/cache/
+    - /var/cache/cosmosfs/
+    - /var/cache/cosmosfs/ds	# domain stream cache
+    - /var/lib/
+    - /var/lib/cosmosfs/
+    - /var/lib/cosmosfs/ax	# access path index database
+    - /var/lib/cosmosfs/dp	# domain packet index database
+    - /var/lib/cosmosfs/rq	# request string cache database
+    - /var/lib/cosmosfs/ss	# scannerserver and filter compiled units database
+system-wide_cosm :
+    - /usr/lib/cosmosfs/_cosm/types/div.hna
+    - /usr/lib/cosmosfs/_cosm/types/fdg.hna
+    - /usr/lib/cosmosfs/_cosm/types/hna.hna
+    - /usr/lib/cosmosfs/_cosm/types/html.hna
+    - /usr/lib/cosmosfs/_cosm/types/ox.hna
+    - /usr/lib/cosmosfs/_cosm/types/yaml.hna
+user_provided_files :
+    - ~/.cosm/
+    - ~/.cosm/types/
+    - ~/.cosm/types/*.hna
+    - ~/.cosm/types/*.fdg
+target_platforms :
+    - linux fuse
+    - osxfuse
+    - windows dokanY ( MIT license )
+    - openbsd fuse
+    - netbsd puffs, librefuse
+source_files_list :
+    - cosmosfs/
+    - cosmosfs/Makefile
+    - cosmosfs/src/
+    - cosmosfs/src/axpa.[ch]
+    - cosmosfs/src/cosm.[ch]
+    - cosmosfs/src/cosmosfs.[ch]
+    - cosmosfs/src/dpak.[ch]
+    - cosmosfs/src/dpserver.[ch]
+    - cosmosfs/src/dpstream.[ch]
+    - cosmosfs/src/filter.[ch]
+    - cosmosfs/src/fragbuf.[ch]
+    - cosmosfs/src/fragmap.[ch]
+    - cosmosfs/src/fstack.[ch]
+    - cosmosfs/src/fstackfr.[ch]
+    - cosmosfs/src/fusemain.[ch]
+    - cosmosfs/src/hsp.[ch]		# might be replaced by fstack
+    - cosmosfs/src/list.[ch]
+    - cosmosfs/src/map.[ch]
+    - cosmosfs/src/mapo.[ch]
+    - cosmosfs/src/ss.[ch]
+    - cosmosfs/src/hiena/
+    - cosmosfs/src/hiena/Makefile
+    - cosmosfs/src/hiena/hc.[chyl]
+    - cosmosfs/src/hiena/hiena.[chyl]
+    - cosmosfs/src/fudge/
+    - cosmosfs/src/fudge/Makefile
+    - cosmosfs/src/fudge/fc.[chyl]
+    - cosmosfs/src/fudge/fudge.[chyl]
+    - cosmosfs/src/fudgeql/
+    - cosmosfs/src/fudgeql/Makefile
+    - cosmosfs/src/fudgeql/fudgeql.[chyl]
+    - cosmosfs/src/dpserver/
+    - cosmosfs/src/dpserver/Makefile
+    - cosmosfs/src/dpserver/file.[ch]
+    - cosmosfs/src/dpserver/https.[ch]
+    - cosmosfs/src/dpserver/membuf.[ch]
+    - cosmosfs/src/dpserver/ssh.[chyl]
+...

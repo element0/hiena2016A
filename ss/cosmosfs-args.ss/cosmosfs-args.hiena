@@ -1,0 +1,162 @@
+%hiena
+
+
+%%
+
+cosmosfs-args	::=	cmdname {:: sources ::} {:: fuseargs ::}
+
+cmdname		::=	filepath
+
+sources		::=	filepath+
+
+fuseargs	::=	fusearg+ mountpoint
+
+fusearg		::=	{% [-][hVuqz] %}
+		|       "-o " fuseopt ( ',' fuseopt)*
+
+fuseopt		::=	{% [[:alnum:]=]+ %}	/* rough simplification */
+
+mountpoint	::=	filepath
+
+filepath	::=	{% ([.]|[~])?[/]? %} filename ( '/' filename )*
+
+filename	::=	{% [[:alnum:]_.-]+ %}	/* rough simplification */
+
+
+
+%% FSM parse tables 
+
+cosmosfs-args
+--> cmdname
+cmdname
+--> sources
+sources
+--> fuseargs
+fuseargs
+--> ACCEPT
+
+cmdname
+--> filepath
+filepath
+--> ACCEPT
+
+sources
+--> filepath+
+filepath
+--> filepath
+--> lookahead notfilepath
+lookahead notfilepath
+--> ACCEPT
+
+fuseargs
+--> fusearg
+
+fusearg
+--> [-]
+[-]
+--> [h]
+--> [V]
+--> [u]
+--> [q]
+--> [z]
+--> [o]
+[h]
+--> .
+[V]
+--> .
+[u]
+--> .
+[q]
+--> .
+[z]
+--> .
+[o]
+--> [ ]
+[ ]
+--> fuseopt
+fuseopt
+--> .
+--> [,]
+[,]
+--> fuseopt
+
+fuseopt
+--> [0-9]
+--> [a-zA-Z]
+--> [=]
+[0-9]
+--> .
+--> [0-9]
+--> [a-zA-Z]
+--> [=]
+[a-zA-Z]
+--> .
+--> [0-9]
+--> [a-zA-Z]
+--> [=]
+[=]
+--> .
+--> [0-9]
+--> [a-zA-Z]
+--> [=]
+
+mountpoint
+--> filepath
+
+filepath+
+--> filepath
+/* fallthru */
+filepath
+--> [.]
+--> [~]
+--> [/]
+--> filename
+[.]
+--> [/]
+[~]
+--> [/]
+[/]
+--> filename
+
+filename
+--> [.]
+--> [0-9]
+--> [a-zA-Z]
+--> [-]
+--> [_]
+[.]
+--> .
+--> [.]
+--> [0-9]
+--> [a-zA-Z]
+--> [-]
+--> [_]
+[0-9]
+--> .
+--> [.]
+--> [0-9]
+--> [a-zA-Z]
+--> [-]
+--> [_]
+[a-zA-Z]
+--> .
+--> [.]
+--> [0-9]
+--> [a-zA-Z]
+--> [-]
+--> [_]
+[-]
+--> .
+--> [.]
+--> [0-9]
+--> [a-zA-Z]
+--> [-]
+--> [_]
+[_]
+--> .
+--> [.]
+--> [0-9]
+--> [a-zA-Z]
+--> [-]
+--> [_]
+

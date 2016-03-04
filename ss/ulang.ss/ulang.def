@@ -1,0 +1,103 @@
+#deflang
+
+%{
+
+struct fuse_entry_param {
+    fuse_ino_t ino;
+    unsigned long generation;
+    struct stat attr;
+    double attr_timeout;
+    double entry_timeout;
+};
+
+
+%}
+
+%%
+%{
+    struct fuse_entry_param fep;
+%}
+	/* TBD: this pass-through scanner not implemented yet... */
+
+lookup		:	(:: ulang ::);
+
+
+
+%%
+	/* IMPLEMENTED ulang.ss 6-15-2015 raygan */
+
+ulang		:	ucmd list, END
+		;
+ucmd list	:	( LISTELEMENT / EMPTYELEMENT )+
+		;
+		;
+END		:	%{	\n			}%
+		|	%{	<<EOF>>			}%;
+LISTELEMENT	:	%{	([^,\n]|(\x5c,))+	}%
+			{:le head:	ucmd   :le tail:};
+
+EMPTYELEMENT	:	%{	[,]/[,]			}%;
+%ignore		:	%{	[,]			}%;
+
+le head		:;	/* OPT WS */
+le tail		:;	/* OPT WS */
+i
+
+
+
+
+
+%%
+	/* IMPLEMEMTED ucmd.ss 6-15-2015 raygan */
+
+ucmd		:	literal match
+		|	regex match
+		|	assignment
+		;
+regex match	:	property name, regex match op, input string;
+literal match	:	( property name, literal match op )? ( input string / property name );
+assignment	:	property name, assignment op, ( input string / property name);
+
+assignment op	:	%{	":=" 				}%;
+regex match op	:	%{	[=]~				}%;
+literal match op:	%{	[=]{,2}/[^~] 			}%;
+property_name	:	%{	[@][[:alpha:]][[:alnum:]_-]*	}%;
+input string	:	%{	[^\n:=~@]			}%
+			{:    filename / free text / number	:};
+
+
+
+
+
+%%
+	/* IMPLEMENTED filename.ss 6-15-2015 raygan */
+
+filename	:	basename ( suffix )*	;
+basename	:	%{	[[:alpha:]][[:alnum:]]_-]	}%;
+suffix		:	%{	[.][[:alnum:]]+			}%;
+
+
+
+
+
+
+%%
+	/* IMPLEMENTED freetext.ss 6-15-2015 raygan */
+
+freetext	:	%{	[.]+				}%;
+
+
+
+
+
+
+%%
+	/* IMPLEMENTED number.ss 6-15-2015 raygan */
+
+number		:	integer
+		|	float
+		;
+integer		:	%{	[[:digit:]]+([,][[:digit:]]+)*/[^.]		%};
+float		:	%{	[[:digit:]]+([,][[:digit:]]+)*[.]([[:digit]]+)	%};
+
+

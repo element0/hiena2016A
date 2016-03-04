@@ -1,0 +1,89 @@
+== DESIGN: ox language ==
+--------
+
+== EXAMPLE: ox language example ==
+
+first block
+elements
+in
+first
+block
+
+second block
+elements
+in
+second
+block
+
+third block
+   sub elements
+and
+elements
+   and more sub elements
+of 
+   third
+      block
+
+--------
+
+== DESCRIPTION: example ==
+
+in above example there are three blocks
+
+in url syntax they would be:
+"ox language example"/"first block"
+"ox language example"/"second block"
+"ox language example"/"third block"
+
+"first block" has the following entries:
+    "first block"
+    "elements"
+    "in"
+    "first"
+    "block"
+
+this breeds the URL: "ox language example"/"first block"/"first block"
+
+which is kind of confusing.
+
+"third block" has the following entries:
+    "third block"
+    "and"
+    "elements"
+    "of"
+
+two more confusing url's:
+"third block"/"third block"/"sub elements"
+"third block"/"elements"/"and more sub elements"
+
+to think about this in terms of the command line:
+
+%ls "ox language example"
+>first block
+>second block
+>third block
+
+%ls "ox language example"/"first block"
+>first block
+>elements
+>in
+>first
+>block
+
+%ls "ox language example"/"third block"
+>third block
+>and
+>elements
+>of
+
+%ls "ox language example"/"third block"/"third block"
+>sub elements
+
+conclusion:
+it seems to be a confusing fact of life about the ox language that the first line of an outline block is both the name of the block and the name of the first child in the block.  The better way to think about it is, blocks are known by the name of their first child.
+
+%ls "ox language example"/first_child().name="third block"/"third block"
+>sub elements
+
+
+--------

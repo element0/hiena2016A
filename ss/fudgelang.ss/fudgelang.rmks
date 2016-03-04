@@ -1,0 +1,130 @@
+#raymarks
+
+
+== DESCRIPTION: Fudge language - a microlanguage run in the path segments of a file path ==
+
+the language of a hiena request.
+
+part/part/part/part/part/part
+
+whereas each part is a separate query performed on the results of the preceding part.
+
+--------
+
+== HNF: ==
+
+ulangpath
+	:= ulang ( '/' ulang )*
+
+ulang	:= (:: ulang/*  ::)
+
+fudge	:= identifier
+	|  assignment
+	|  conditional
+
+identifier
+	:= id_segment ( '.' derivative )*
+
+assignment
+	:= indentifier assign_op value
+
+conditional
+	:= identifier condition_op value
+
+value	:= identifier
+	|  freetext
+
+condition_op
+	:= "=" | "==" | "!="
+	|  "=lt=" | "=gt="  
+	|  "=lte=" | "=gte="
+
+--------
+
+== STATE MACHINE: ==
+
+// Level 1, simple grammar
+// the following parses a "name" component from a path lookup
+
+START
+--> [.]	//start with dot
+--> [@] //starts with @
+--> [{] //starts with {
+--> _other_ //starts with other
+
+[.]
+--> [.]
+--> [@]
+--> [{]
+--> _other_
+
+
+--------
+
+== EXPRESSION TYPES: ==
+
+value assignment	:=
+stream append		:.=
+
+address			/* an address is not enclosed in brackets */
+[value]			/* a value is enclosed in [] brackets */
+
+
+assigning the value at an address:
+address := addr2
+
+bi-lateral linking two addresses:
+addr :=: addr2
+
+live updating feed linking addresses:
+addr ::= addr2
+
+
+--------
+
+== EXAMPLES: ==
+
+/x/a/b/d/m			/* resolves to a single file or directory */
+/x/a/b/d/m,n,o			/* resolves to a union of m,n,o */
+
+/x/a/b/d/m:=/x/2/d/5/x		/* copy's value from x to m */
+/x/a/b/d/m:=+/x/2/d/5/x		/* add's value of x to m */
+/x/a/b/d/m:=-/x/2/d/5/x		/* subtracts value of x from m */
+/x/a/b/d/m:.=/x/2/d/5/x		/* append's stream from x onto m */
+
+/x/a/b/d/m:=["one flew over the cukoo\'s nest"]	/* copies string to m */
+/x/a/b/d/m:.=[" two times"]			/* appends string to m */
+
+2/3/8/z/7:=[2,000.27]				/* copies number to m */
+
+door,number[1],age[12],color[blue] 	/* selects any element named door, numbered 1, age 12, */
+name[door]...				/*	colored blue				       */
+
+door,number[1]/door,color[^red]/	/* selects non red doors, children of doors numbered 1 */
+
+door,window,chair			/* selects union of elements named door or window or chair */
+
+prune,apple,fish			/* selects union of elements named prune, apple or fish */
+
+box,color[blue]			/* selects elements named box, colored blue */
+name[box],color[blue]
+
+{prune,apple},type:=[fruit]	/* assigns "fruit" to type property of elements named prune or apple */
+prune,type:=[fruit]
+apple,type:=[fruit]
+
+box,color[*]			/* selects all elements named box, any color */
+name[box],color[*]		
+
+dog:=/path/to/glory[easy]?[lucky]:[wise]	/* if path/to/glory is easy, dog is lucky, else wise */
+/path/to/glory[easy]?dog:=[lucky]:dog:=[wise]
+
+
+/fridge/lower_drawer,[^full]?/apples++:upper_drawer/apples++
+
+/boxes/raygan´s,jack´s,ezra´s/pokemon++
+
+crazy[glue]?poison[pill]?one[thing]:another:"crazy not glued"
+
+
+--------

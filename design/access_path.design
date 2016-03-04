@@ -1,0 +1,86 @@
+access path design.
+
+objects:
+
+access path {
+    file system {
+	string cache,
+	rql {
+	    process,
+	    payload
+	}
+    }
+    branch table,
+    domain packet,
+    cosm {
+	types
+    }
+}
+
+access path :
+   file system :
+      string cache,
+      rql :
+         process,
+	 payload
+	 ;
+      ;
+   branch table,
+   domain packet,
+   cosm :
+      types
+      ;
+   ;
+
+
+
+
+
+
+
+
+access path :=
+   file system,
+   branch table,
+   domain packet,
+   cosm
+   ;
+
+file system :=
+   string cache
+   rql
+   ;
+
+rql :=
+   process,
+   payload
+   ;
+
+cosm :=
+   types
+   ;
+
+
+functions:
+
+
+access path, serialno --> branch lookup --> access path id
+
+branch lookup () :
+
+    serialno --> access path { branch table } --> access path id | 0
+    { 
+	0 ?
+	{
+	    serialno --> string cache --> string
+	    string, access path --> rql --> access path id
+	    access path id, serialno --> branch table --> access path id
+	}
+    }
+;
+
+branch table ()
+{
+    serialno ...;
+    access path id, serialno ...;
+}

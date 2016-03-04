@@ -1,0 +1,34 @@
+access path design.
+
+objects:
+    access path {
+        file system object ref;
+	    string cache;
+	    rql subsystem {
+		rql processor();
+		rqlpayload;
+	    }
+	branch table;
+	domain packet;
+	cascading operating system {
+	    types;
+	}
+    }
+
+functions:
+
+
+access path, serialno --> branch lookup () --> access path id
+{
+    serialno --> access path { branch table } () --> access path id | 0
+    { 
+	0 ?
+	{
+	    serialno --> string cache() --> string
+	    string, access path --> rql payload() --> rqlpayload
+	    rqlpayload --> rql() --> access path id
+	    access path id, serialno --> branch table ()
+	    access path id
+	}
+    }
+}

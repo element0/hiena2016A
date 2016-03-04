@@ -1,0 +1,4 @@
+benchmark bash vs lex 9:1
+ox-interior-c 3423103 ns
+ox-interior 6444750 ns
+ox-interior.bash 69773803 ns

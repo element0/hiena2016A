@@ -1,0 +1,425 @@
+
+
+== DESIGN: dpakstream program flow ==
+
+a dpakstream object
+-------------------
+
+a dpakstream structure holds context for reentrant io functions
+which access the domain stream of a dpak structure
+
+a dpakstream references a dpak and holds state for current read position
+
+it is analgous to the FILE structure
+
+
+a dpak object ( the relevant bits )
+-----------------------------------
+
+the parts of the dpak which matter most to the dpakstream are
+the dpak's media record, server, filter and fragment map.
+
+
+open a dpakstream for io
+------------------------
+
+similarly to FILE calls.
+housekeeping: locks, sync.
+
+
+lock
+----
+
+ideally we want to lock the underlying media of the dpak against writes
+during our read cycle.  if we don't lock, we could get stuck in a sync
+race if the underlyer constantly changes.
+
+the dpak may be a union set of several dpaks.  these should all be locked.
+if they can't be locked, they can still be used, but a MAXTRIES governor
+will be implemented during sync for those dpaks.
+
+
+seek
+----
+
+start with { seekpos, dpak }
+
+if the dpak has a fragment map we use the map's index to
+locate the fragment containing seekpos and we calculate an
+offset within the fragment.
+
+this gives us { fragment, fragpos }
+
+if the dpak does not have a fragment map we must make one...via filter.
+
+
+
+filter
+------
+
+dpak { filter }
+
+the dpak's filter builds the dpak's fragment map.
+the filter must start reading at a fixed boundary
+in order to interpret the media correctly.  the boundary
+is usually the beginning of a file, a block, a packet
+or some other known container.
+
+the filter reads via the dpak's server and the dpak's media record (addr).
+
+dpak { server, addr }
+
+the filter creates fragments and adds them to the dpak's fragment map.
+
+dpak { fragmap }
+
+when the filter maps enough fragments to cover the entire read request
+it pauses - and creates a checkpoint for reentry.
+
+
+filter: efficiency vs security
+------------------------------
+
+being that the filter covers the entire area of the read request, it could
+fill the request while it creates the map -- however, being that the filter
+is a user suppliable module, security policy should restrict it from writing
+directly into process memory at the "ptr" variable.
+
+example:  read(ptr,size);
+
+the filter could, however, allocate its own buffer and return such buffer.
+But in order to satisfy the "read(ptr,size)" paradigm
+we would copy the buffer returned by filter back to "ptr"
+and thus lose any efficiency.
+
+Unless we relax security policy, we must accept that running the filter
+increases read time while the filter maps the media.
+
+
+filter: stream transformation
+-----------------------------
+
+The filter might translate the stream.  In which case it allocates one or more
+buffers to hold the translation and assigns an address from the buffer
+to the fragment.  In this case the fragment would have a media record inside
+the buffer, a server which serves the buffer.
+
+fragment { addr, server }
+
+The fragment would need a reference to the underlying media so we can test
+sync.
+
+fragment { underlier { addr, server } }
+
+
+filter: additional security design concerns
+-------------------------------------------
+
+being that the filter is an external module
+we should eliminate the possibility that it can modify ANY memory.
+the only thing it should be allowed to do, is submit
+objects which itself malloc's and it shall be allowed
+to use call back functions to submit those objects.
+
+any structures those objects are submitted to, ie the current dpak,
+must be referenced by a temporary serial ID which lasts for 
+the duration of the filter call.
+
+the structure of callback's itself should be duplicated before passing it
+to the filter, in case a mallicious filter should insert its own
+calls into the callback structure.  after the filter call returns
+the duplicate callback structure should be destroyed.
+
+the simple rule:  expose no memory.
+
+the dpak's server and addr which are needed to provide input to the filter
+must be referenced by temporary serial ID's understood by the server callback.
+
+a mallicious filter could bypass the server callback and generate
+a buffer of data from an unintended origin.  it is therefor recommended that
+filter code be run in a sandbox and that server code be run in trusted space.
+or a filter could be implemented through a byte-code machine.
+
+
+
+server
+------
+
+the server is the simplest concept in the dpakstream io chain.
+it responds to a "read(ptr,size,addr)" paradigm.
+
+a small library of servers is built into the hiena process.
+server modules can be exogenic, however they must be guarded.
+
+each server operates on a specific resource.
+
+each server is identified by a short string: "fs", "file", "mem", "dpak"
+
+the fs, file, mem and dpak servers are all that is required for a fully
+functional hiena-cosmos build.  (servers which access "ssh" and "https"
+could be builtin but can also be mounted with fuse and accessed via "fs".)
+
+when the dpakstream is opened, the server is called to open a state object
+from the dpak's addr.  the state object ie DIR or FILE will be passed to the
+server's read function.
+
+
+
+sync
+----
+
+next step is to check the sync flags within the fragment record.
+has the underlying media changed?  if so, we need to reload the fragment.
+
+
+reload fragment
+---------------
+TBD
+
+
+reading
+-------
+
+a dpak must have a media record (addr) and a server.
+
+if dpak's filter is unset a builtin passthru filter will be assigned.
+
+
+
+
+
+
+
+
+--------
+
+
+
+== DESIGN: dswrite() ==
+dswrite ( ptr, size, count, ds ); /* return size_written */
+
+
+stage 1 - cell map
+
+first, dswrite creates a new cell map, with a new cell placed into it
+- the new cell made from {ptr, size, count}
+- the cell map cloned from ds->dpak->val
+
+
+stage 2 - validation
+
+next, dswrite calls an appropriate filter->write function -- for mode insert, append, etc.
+-- giving context of leading fragment, new fragment, trailing fragment.
+-- giving context of old leading fragment, old trailing fragment.
+
+filter ascertains if and how to encode new fragment
+, maps new fragment into pre-filter stream
+, restarts the filter at preceeding filter checkpt
+, validates whether new fragment fits filter rules
+
+
+stage 3 - server write
+
+if fragment fits filter rules, filter calls server->write function -- for mode...
+-- setting filter fpos
+-- giving ptr, size, count
+
+server writes to its medium
+-- pushes a backup of previous data
+-- writes new data to medium
+-- maps current file to new data
+
+
+stage 4 - confirm
+
+server sends OK(size of server write) to filter
+filter sends OK(size of filter input write) to dswrite
+dswrite pushes a backup of old cell map
+dswrite finalizes new cell map
+dswrite sends OK(size of new cell) to return
+
+
+--------
+
+== DESIGN: frag_check_sync() ==
+
+sync is a whole can of worms.
+
+src:.....ooooo.....
+map:_____|||||_____	map is in sync
+
+now src changes
+
+src:.....oooooo....
+map:_____|||||_____	map is out of sync
+
+we have to rescan "src"
+
+src2:.....oooooo....
+map2:_____||||||____    
+map1:_____|||||_____    
+delt:__________|____    map delta
+
+and now we have to apply changes to map1.
+
+src:.....oooooo....
+map:_____||||||____	map is in sync
+
+---
+ways to implement changes
+   .) change logs -- record the sequence of changes to one map, apply them to another map
+   .) reconstruction -- re-scan source, build a fresh map,
+   			use old map as a grammar
+			scan the fresh map using old map as grammar
+			map the fresh map to the old map
+   .) reload -- discard old map
+                re-scan source, build a fresh map
+
+ways that hiena can implement the above
+   change logs -- hiena process can log its writes
+   reconstruction 
+--------
+
+== DESIGN: dsread() ==
+
+
+
+	
+	rread =+ filter->op->yyparse( fframe->lexer, fframe, rremain );
+
+	/* we could give yyparse powers to write directly to "ptr"
+	   however, since filters are external modules, this would
+	   create a loophole into memory without bounds checking. */
+
+	/* the downside is that yyparse will scan the input stream,
+	   then journal the fragment boundaries,
+	   and then read_frag: will scan the input stream again.
+	   a double scan. */
+
+	/* but filter may need to encode to a new buffer,
+	   which would require a the double pass scenario anyway.
+	   a filter is a filter after all. */
+
+
+
+---
+
+dsread() is tasked to fill a buffer with bytes
+from the domain stream of a domain packet.
+
+the dpak structure holds domain stream fragments
+
+    dpak
+        val .cell	// domain stream
+	    cell[*]
+	        frag[*]
+
+
+a dpakstream structure keeps a current read position and other context.
+this is analgous to the FILE structure.
+there can be multiple dpakstream structures open on a domain packet.
+
+the dpakstream structure holds important read state
+
+    dpakstream
+        dpak
+	curfrag
+	curpos
+	curfragpos
+
+	/* curfragpos is the relative position inside the current fragment
+	   whereas curpos is the relative position inside the dpak stream */
+
+dsread() is designed not to be a recursive function to avoid a growing stacktrace
+instead we use stack objects and a loop.
+
+we can conceptualize the loop as a function:
+
+    dsread_loop ( ptr, size, frag, fragpos, dpak, dpak_pos ) {
+         if frag is buffered
+	    and buffer is in sync
+	       read from buffer 
+	       --
+	       write bytes to request buffer ptr
+	       until EOFRAG or REQUEST_FILLED
+	 if frag is not buffered
+	    or not in sync
+	    or NULL
+               get frag from filter
+		  filter reads from server -- using original address
+		     --
+		     position server at checkpoint on or before ds->fpos
+		     server reads from its source
+		     until EOF or REQUEST_FILLED
+		  translates the stream if so designed
+		  write bytes to request buffer ptr
+		  write bytes to frag->buf
+		  until EOFRAG or REQUEST_FILLED
+    }
+
+
+
+in dsread's loop when the current fragment is either not buffered or NULL
+dsread deligates to filter->read( &ptr, size, filterstate );
+
+
+
+dpakstream holds the filterstate
+
+    dpakstream
+	filterstate
+
+    /* no matter how many threads are active
+       the filterstate is consistant
+       it contains the current position and context of the 
+       filter parse. */
+
+
+
+filter->read uses filterstate to hold serverstate
+
+    filterstate
+        serverstate
+
+    /* again, no matter how many threads are active
+       the serverstate is consistent
+       it contains the positiona and context of the server
+       stream. */
+
+
+when filter->read runs out of buffer
+filter->read deligates to server->read( serverstate, &ptr, size );
+
+filter->read manages buffering through domain stream fragments
+
+    dpakstream_internal .cell
+        cell[*]
+	    frag[*]
+	        buffer
+
+filter->read check if buffer is in sync with server
+and will make a decision whether to fill the request
+from the buffer -- or to activate server->read.
+
+
+--------
+
+== OBJECTS: dpakstream ==
+
+dpakstream
+    dpak ptr
+    op->filter
+    op->serve
+    filterstate
+        instance .yyscanner_t
+        pos
+        serverstate
+	    pos
+
+dpak
+    val .dpakstream_internal
+        cell[*]
+	    frag[*]
+	        buffer
+
+--------

@@ -1,0 +1,12 @@
+== TITLE: status report ==
+date ( 12-18-2015 );
+author ( raygan );
+
+hienafs - waiting on libcosmos
+
+hiena - waiting on libcosmos
+
+libcosmos - developing dpakstream io
+
+
+--------

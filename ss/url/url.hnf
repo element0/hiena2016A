@@ -1,0 +1,79 @@
+/* see "RFC XXXX Uniform Resource Locators (URL) March 21 1994"
+   <http://www.w3.org/Addressing/URL/url-spec.txt>
+   */
+
+%%
+
+url := filepath | fullurl
+
+filepath := %{ ([~]?[/]+)?[[:alnum:] ./_-]+ }%
+
+fullurl := httpaddress
+	| ftpaddress
+	| sshaddress
+	| fileaddress
+
+scheme	:= ialpha	/* unused */
+
+httpaddress := %{ http[s]:// }% hostport ( '/' path )? ( '?' search )?
+ftpaddress  := %{ [s]ftp:// }% login '/' path ( ftptype )?
+fileaddress := %{ file:/// }% path
+
+login	:= ( user ( ':' password )? '@' )? hostport
+
+hostport := host ( ':' port )?
+
+host	:= hostname | hostnumber
+
+ftptype	:= 'A' formcode | 'E' formcode | 'I' | 'L' digits
+
+formcode := 'N' | 'T' | 'C'
+
+hostname := ialpha ( '.' hostname )*
+
+hostnumber := digits '.' digits '.' digits '.' digits
+
+port	:= digits
+
+path	:= void | segment ( '/' path )*
+
+segment	:= xpalphas
+
+search  := xalphas ( '+' search )*
+
+user	:= alphanum2 ( user )*
+
+password := alphanum2 ( password )*
+
+alphanum2 := %{ [[:alnum:]_.+-] }%
+
+xalpha	:= %{ [[:alnum:]] }% | safe | extra | escape
+
+xalphas := xalpha ( xalphas )*
+
+xpalpha := xalpha | '+'
+
+xpalphas := xpalpha ( xpalphas )*
+
+ialpha	:= alpha ( xalphas )*
+
+alpha	:= %{ [[:alpha:]] }%
+
+digit	:= %{ [[:digit:]] }%
+
+safe	:= %{ [-$_@.&+] }%
+
+extra   := %{ [!*"'(),] }%
+
+reserved := %{ [=;/#?: ] }%			/*unused*/
+
+escape   := '%' hex hex
+
+hex     := %{ [[:digit:]a-fA-F] }%
+
+alphanum := alpha | digit
+
+alphanums := alphanum ( alphanums )*		/*unused*/
+
+void	:= %empty
+

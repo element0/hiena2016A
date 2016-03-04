@@ -1,0 +1,67 @@
+// hiena file for ox scannerserver
+
+%%
+
+ox		: blank or indented lines ?
+		  (:: outline+ ::)
+     		  blank or indented lines ?
+		  END
+   		;
+outline		: line
+		  indented_area(:: outline + ::) ?
+		  {:: remove_indent() ::}
+	 	;
+line		: NON_INDENTED_LINE
+		;
+indented_area	: indented_line +
+		;
+indented_line	: INDENT INDENTED_LINE
+		;
+blank or indented lines
+		: BLANKLINE ( BLANKLINE / indented_line )*
+		;
+
+NON_INDENTED_LINE	:	%{ ^[[:nonblank:]].*$		}%;
+INDENTED_LINE		:	%{ ^[ \t]+[[:nonblank:]].*$	}%;
+BLANKLINE		:	%{ ^[ \t]*$			}%;
+
+
+
+%%
+
+#define TABTOSPACE 8
+
+int remove_indent() {
+    char c;
+    unsigned int count, newcount;
+    do {
+	c = getc(stdin);
+	if(c==' ') count++;
+	if(c=='\t') count+=TABTOSPACE-(count % TABTOSPACE);
+    }while(c==' '||c=='\t');
+    newcount = count;
+    
+    if(c=='\n') return 1;	// invalid format: first line was blank
+
+    do {
+	while(c!='\n') {
+	    if((c!=' '||c!='\t')&&(newcount<count))
+		return 0;
+	    fputc(c,stdout);
+	    c=getc(stdin);
+	}
+	fputc(c,stdout);
+	fflush(stdout);
+
+	c=getc(stdin);
+	newcount=0;
+
+	while((c==' '||c=='\t')&&(newcount<=count)) {
+	    if(c==' ') newcount++;
+	    if(c=='\t') newcount+=TABTOSPACE-(count % TABTOSPACE);
+	    c = getc(stdin);
+	}
+    }while(1);
+    return 0;
+}
+

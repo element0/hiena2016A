@@ -1,0 +1,9 @@
+   everything
+       in
+           this
+       file
+   should
+       be
+           indented
+           consistently
+end

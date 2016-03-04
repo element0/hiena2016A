@@ -1,0 +1,13 @@
+/* scannerserver: xml */
+
+head:
+  '<'elementname'>'
+;
+
+tail:
+  '<'${head/elementname}'>'
+;
+
+elementname:
+   /[[:alpha:]][[:alnum:]_]*/
+;

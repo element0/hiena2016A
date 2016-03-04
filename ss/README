@@ -1,0 +1,12 @@
+This ss/ directory is for development.
+
+The contents of each *.ss/ are made into so files
+and are installed under /usr/local/etc/cosmosfs/ss/
+or under ~/.config/cosmosfs/ss/
+to be available for the cosmosfs init stage.
+
+additionally, they can be installed under (.|_)cosm/types/
+to be made accessible to the cosmosfs after it loads.
+
+--raygan
+

@@ -1,0 +1,37 @@
+// def file for raymarks scannerserver
+// author: raygan
+// date: 3/22/2015
+
+%%
+
+.*	return CONTENT;
+
+%%
+
+raymarks:=
+   skip blank lines,
+   {: raymark+ :},
+   skip blank lines
+;
+
+raymark:=
+   header,
+   {CONTENT: - raymark :}
+   footer;
+
+header :=
+   BOL, "==", typename, ":", identifier, "==", EOL
+;
+
+footer :=
+   BOL, "--------", EOL
+;
+
+identifier :=
+   name, assignment*
+;
+
+name       :=NAME;
+
+assignment :=
+   {key,"(": value :")"};

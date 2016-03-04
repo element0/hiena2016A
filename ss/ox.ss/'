@@ -1,0 +1,87 @@
+%{
+#include <stdlib.h>
+#include "ox.tab.h"
+#define TAB_TO_SPACE 8
+#define YY_USER_ACTION yyextra->cur_location = yyextra->bytes_read;\
+    yyextra->bytes_read += yyleng;
+
+static int get_indent_len(char *indent, int tabwidth) {
+    int count = 0;
+    char c;
+    while ((c=indent[0])!='\0'){
+	if (c == ' ')
+	    count++;
+	else if (c == '\t')
+	    count+=tabwidth;
+	indent++;
+    }
+
+    return count;
+}
+
+
+%}
+%option reentrant stack bison-bridge noyywrap
+%option bison-locations
+%option extra-type="Hsp *"
+
+
+%%
+%{
+int tab_to_space = TAB_TO_SPACE; 
+char *ttsa = yyextra->op->getenv("TAB_TO_SPACE");
+int ttsi = 0;
+
+if (ttsa != NULL) {
+    ttsi = atoi(ttsa);
+}
+
+if (ttsi != 0) {
+    tab_to_space = ttsi;
+}
+printf("tab_to_space: %d\n", tab_to_space);
+
+/**** LOCAL VARS ****/
+void *b;  /* bounds */
+
+%}
+
+<<EOF>>				{
+    printf("EOF\n");
+    return END;
+				}
+
+^[^ \t\n][^\n]*[\n]		{ 	
+    printf("yytext: %s\n",yytext);
+    yylval->ob = yyextra->op->make_ob(NON_INDENTED_LINE, yyextra);
+    yyextra->op->set_bounds(yylval, 'x', yyextra->cur_location, yyleng);
+    yyextra->op->set_buf(yylval, yyleng, yytext);
+    return NON_INDENTED_LINE;
+				}
+
+
+^[ \t]+				{
+    Ppak *ob = yyextra->op->make_ob(INDENT, yyextra);
+    printf("\"%s\"\n",yytext);
+    printf("indent len: %ld\n", get_indent_len(yytext, tab_to_space));
+    return INDENT;
+    				}
+
+[^ \t\n][^\n]*[\n]		{	
+    printf("%s\n",yytext);
+    return INDENTED_LINE;
+				}
+
+^([ \t]{-}[\n])*[\n]		{	
+    printf("\"%s\"\n",yytext);
+    return BLANKLINE;
+				}
+
+.				{
+    printf("ignored text\n");
+    printf("\"%s\"\n",yytext);
+    printf("ignoring.\n");
+				}
+
+%%
+

@@ -1,0 +1,41 @@
+#def
+
+%%
+
+json		: value END
+		;
+value		: string | number
+		| array  | object
+		| TRUTOK | FALTOK | NULTOK
+		;
+object		: {:'{': key value pair [',' key value pair]* :'}':} ;
+array		: {:'[': value          [',' value]*          :']':} ;
+
+key value pair	: string ':' value ;
+
+string		: {:'\"': string_content? 		      :'\"':} ;
+
+string_content	: %{	([^"]|[\]["])+	}% ;	/* over simplified */
+number		: %{	[[:digit:]]+	}% ;	/* over simplified */
+TRUTOK		: "true"  ;
+FALTOK		: "false" ;
+NULTOK		: "null"  ;
+
+
+
+%%
+
+translate: @{
+	       printf '{'
+	       for each in *
+	       do
+		   printf '\"'$each'\":'$(translate $each)
+	       done
+	       printf '}'
+		   
+	   }@
+;
+
+
+
+
