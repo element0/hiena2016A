@@ -76,16 +76,15 @@ void axpa_cleanup ( Axpa *a ) {
 
 /*---- SETTERS ----*/
 
-void axpa_set_garbage(Axpa *a, Axpa *garbage) {
-    if(a == NULL || garbage == NULL) return;
+int axpa_set_garbage(Axpa *a, Axpa *garbage) { /* 1 | 0 */  /* CHANGED 3-3-16 return value */
+    if(a == NULL || garbage == NULL) return 0;
 
     a->next_garbage = garbage->next_garbage;
     a->prev_garbage = garbage;
     garbage->next_garbage = a;
-    a->next_garbage->prev_garbage = a;
+    if(a->next_garbage != NULL) a->next_garbage->prev_garbage = a;
 
-
-    return;
+    return 1;
 }
 
 int axpa_set_rql ( Axpa *a, Dpak *rql ) { /*== TRUE || ERROR */

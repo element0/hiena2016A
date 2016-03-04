@@ -19,40 +19,8 @@ list_t     *init_serverlib      ();
 void        serverlib_cleanup   ( list_t * );
 
 addr_t *new_addr_t    ();
-void    addr_t_cleanup( addr_t *a );
 
-
-/*== OBJECT: addr_t ==*/
-typedef struct hiena_parse_packet_addr
-{
-    /* DPAK SERVER RELATIVE ADDRESS */
-    Hpat     *pat;
-    /* AKA */
-    Hpat     *srvaddr;
-    /* AKA */
-    void     *ptr;
-    size_t    size;
-
-    Dpak     *par;
-
-    /* SCANNER DERIVED ADDRESS */
-    bounds_t *bounds;
-    int       bounds_dim;
-    /* MEMORY: 'bounds' free'd by Ppak,
-       do not include any malloc'd items inside 'bounds' */
-    /* "bounds" is defined by the scanner during map object creation
-       and expresses a scanner-relative address in the data
-       sourced by the parent ppak.  */
-    frag_t   *parfrag;
-    /* DEPRICATE ME */
-    Ppak     *parent;	/* this exact pointer is also contained in val.loc.parent */
-    			/* val.loc subject to retirement */
-			/* refers to the originating object:
-			   if current object is derivative, parent refers to original.
-			   if current object is a mapob,
-			   parent is the object that owns the map. */
-}addr_t;
-/*--------*/
+#include "addr_t.h"
 
 
 /*== OBJECT: dpakserver ==*/
