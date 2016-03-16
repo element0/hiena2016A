@@ -1,6 +1,6 @@
-#line 2 "src/rql-bison/rql.yy.c"
+#line 2 "rql.yy.c"
 
-#line 4 "src/rql-bison/rql.yy.c"
+#line 4 "rql.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -480,12 +480,12 @@ static yyconst flex_int16_t yy_chk[137] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "src/rql-bison/rql.l"
-#line 2 "src/rql-bison/rql.l"
+#line 1 "rql.l"
+#line 2 "rql.l"
 #include "../hiena.h"
 #include "rql.tab.h"
 /* %option bison-locations */
-#line 13 "src/rql-bison/rql.l"
+#line 13 "rql.l"
 #define YY_INPUT(buf,result,maxsize)\
     { \
 	int c = yyextra->op->sql_getchar(yyextra); \
@@ -493,7 +493,7 @@ static yyconst flex_int16_t yy_chk[137] =
     } \
 
 
-#line 497 "src/rql-bison/rql.yy.c"
+#line 497 "rql.yy.c"
 
 #define INITIAL 0
 #define quot1 1
@@ -770,10 +770,10 @@ YY_DECL
 		}
 
 	{
-#line 23 "src/rql-bison/rql.l"
+#line 23 "rql.l"
 
 
-#line 777 "src/rql-bison/rql.yy.c"
+#line 777 "rql.yy.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -833,103 +833,103 @@ do_action:	/* This label is used only to access EOF actions. */
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quot1):
 case YY_STATE_EOF(quot2):
-#line 25 "src/rql-bison/rql.l"
+#line 25 "rql.l"
 return END;
 	YY_BREAK
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 27 "src/rql-bison/rql.l"
+#line 27 "rql.l"
 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 28 "src/rql-bison/rql.l"
+#line 28 "rql.l"
 yylval->str = strdup(yytext); return SELECT;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 29 "src/rql-bison/rql.l"
+#line 29 "rql.l"
 yylval->str = strdup(yytext); return STAR;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 30 "src/rql-bison/rql.l"
+#line 30 "rql.l"
 yylval->str = strdup(yytext); return ALL;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 31 "src/rql-bison/rql.l"
+#line 31 "rql.l"
 yylval->str = strdup(yytext); return FROM;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 32 "src/rql-bison/rql.l"
+#line 32 "rql.l"
 yylval->str = strdup(yytext); return WHERE;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 33 "src/rql-bison/rql.l"
+#line 33 "rql.l"
 yylval->str = strdup(yytext); return NOT;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 34 "src/rql-bison/rql.l"
+#line 34 "rql.l"
 yylval->str = strdup(yytext); return IS;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 35 "src/rql-bison/rql.l"
+#line 35 "rql.l"
 yylval->str = strdup(yytext); return LIKE;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 36 "src/rql-bison/rql.l"
+#line 36 "rql.l"
 yylval->str = strdup(yytext); return SEMICOLON;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 37 "src/rql-bison/rql.l"
+#line 37 "rql.l"
 yylval->str = strdup(yytext); return COMMA;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 38 "src/rql-bison/rql.l"
+#line 38 "rql.l"
 BEGIN quot1;
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 39 "src/rql-bison/rql.l"
+#line 39 "rql.l"
 yylval->str = strdup(yytext); return STRING_LITERAL;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 40 "src/rql-bison/rql.l"
+#line 40 "rql.l"
 BEGIN INITIAL;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 41 "src/rql-bison/rql.l"
+#line 41 "rql.l"
 BEGIN quot2;
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 42 "src/rql-bison/rql.l"
+#line 42 "rql.l"
 yylval->str = strdup(yytext); return IDENTIFIER;		
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 43 "src/rql-bison/rql.l"
+#line 43 "rql.l"
 BEGIN INITIAL;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "src/rql-bison/rql.l"
+#line 45 "rql.l"
 ECHO;
 	YY_BREAK
-#line 933 "src/rql-bison/rql.yy.c"
+#line 933 "rql.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2132,4 +2132,4 @@ void rqlfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 44 "src/rql-bison/rql.l"
+#line 44 "rql.l"

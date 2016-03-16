@@ -1,11 +1,17 @@
-#include "hienafs_baked_config.c"
+/* HIENA_HIENAFS_C */
+
+#include "hienafs_baked_config.c" /**< Hard codes the installation file locations. */
 #include "axpadex.h"
 
+
+/**
+ * The Hiena file system object.
+ */
 struct hiena_file_system
 {
-    list_t *serverlib;
-    Axpadex *ax;
-    Dpakdex *dx;
+    list_t *serverlib;	/**< The host resource servers to serve the domain. */
+    Axpadex *ax;	/**< The access path database. */
+    Dpakdex *dx;	/**< The domain map database. */
 };
 
 
@@ -54,13 +60,17 @@ abort:
     return 0;
 }
 
+/**
+ * Create and initialize a new file system object.
+ * Note: this does not init the dpakroot,
+ * you should use 'hienafs_parse_cmdline( argc, argv )' for that.
+ */
 struct hiena_file_system *init_new_hienafs() {
     struct hiena_file_system *hnfs = malloc(sizeof(*hnfs));
     memset(hnfs, 0, sizeof(*hnfs));
 
-    hienafs_load_domain_servers( hnfs );	// located at /usr/lib/cosmosfs/dpserver
+    hienafs_load_domain_servers( hnfs );	/* located at /usr/lib/cosmosfs/dpserver */
     hienafs_load_rql_module( hnfs );
-    hienafs_init_domain_packets( hnfs );
     hienafs_init_lookup_strings( hnfs );
     if(!hienafs_init_access_paths( hnfs )) {
 	fprintf(stderr, "init_new_hienafs: hienafs_init_access_paths failed. returning NULL.\n");

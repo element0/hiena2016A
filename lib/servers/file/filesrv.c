@@ -2,8 +2,10 @@
 
 architecture: linux
 
+
    */
-#include "../server.h"	/* generic server header for all hiena server modules */
+#include <hiena/server.h>	/* generic server header for all hiena server modules */
+// ON IT'S WAY OUT... #include "../../src/hdirent.h" /* hiena directory entries */
 #include <dirent.h>	/* DIR */
 #include <sys/stat.h>	/* stat() */
 #include <unistd.h>	/* stat() */
@@ -31,14 +33,11 @@ void destroy_own( struct server_localfile_own *own ) {
 }
 
 
-void *server_open ( void *addr, const char *mode, struct hiena_transaction *h ) {
-    if ( addr == NULL || mode == NULL || h == NULL )
+void *server_open ( void *addr, const char *mode ) {
+    if ( addr == NULL || mode == NULL )
 	return NULL;
 
     struct server_localfile_own *own = new_own();
-    destroy_own( h->own );
-    h->own = (void *)own;
-
     own->addr = addr;
 
     /* test for type, file or dir */
@@ -75,7 +74,6 @@ void *server_open ( void *addr, const char *mode, struct hiena_transaction *h ) 
 		break;
 
 	}
-        destroy_own( h->own );
 	return NULL;
 
     }
@@ -103,14 +101,12 @@ void *server_open ( void *addr, const char *mode, struct hiena_transaction *h ) 
 		default:
 		    ;
 	    }
-            destroy_own( h->own );
-	    h->own = NULL;
 	}
 
 	own->dirp = dirp;
 	own->fp   = NULL;
 
-	return (void *)dirp;
+	return (void *)own;
     }
     
     /* if file type */
@@ -119,44 +115,53 @@ void *server_open ( void *addr, const char *mode, struct hiena_transaction *h ) 
 	own->fp   = fp;
 	own->dirp = NULL;
 
-	if( fp == NULL ) {
-            destroy_own( h->own );
-	    h->own = NULL;
-	}
-
-	return (void *)fp;
+	return (void *)own;
     }
 
     return NULL;
 }
 
-size_t server_read ( void **ptr, size_t size, void *object, struct hiena_transaction *h ) {
+size_t server_read ( void **ptr, size_t size, void *object, struct hiena_server_transaction *h ) {
     if( ptr == NULL || size == 0 || object == NULL || h == NULL )
 	return 0;
 
-    struct server_localfile_own *own = h->own;
+    struct server_localfile_own *own = object;
 
     if( own == NULL )
 	return 0;
 
     /* read dir */
     if ( own->dirp != NULL && own->fp == NULL ) {
-	struct dirent *direntp;
-	int chid = 0;
-
-	size_t child_addr_len;
-	char *child_addr = NULL;
-
 	printf( "DIR:\n");
-	while ((direntp = readdir( own->dirp )) != NULL) {
-	    chid = h->new_child( h->id );
-	    h->child_set_prop( "name", direntp->d_name, chid );
 
-	    child_addr_len = strlen(own->addr) + 1 + strlen(direntp->d_name) + 1;
-	    child_addr = malloc(child_addr_len*sizeof(char));
-	    snprintf( child_addr, child_addr_len, "%s/%s", own->addr, direntp->d_name );
-	    child_addr[child_addr_len-1] = '\0';
-	    h->child_set_addr( child_addr, chid );
+	void  *m, *c, *d = h->dir_new();
+	struct dirent *dp;
+	char  *d_name_var, *child_addr;
+	size_t d_name_len, child_addr_len;
+
+
+	while (( dp = readdir( own->dirp )) != NULL ) {
+
+	    d_name_len 	= strlen(dp->d_name);
+	    d_name_var	= strndup(dp->d_name, d_name_len+1);
+	    
+	    child_addr_len = strlen( own->addr ) + 1 + d_name_len + 1;
+	    child_addr     = malloc( child_addr_len * sizeof(char) );
+
+	    snprintf( child_addr, child_addr_len, "%s/%s", own->addr, d_name_var );
+	    child_addr[ child_addr_len - 1 ] = '\0';
+
+	    printf( "child_addr: %s\n", child_addr );
+
+
+	    m = h->map_new_freeagent( d_name_var, d_name_len, "name" ); 
+	    c = h->dir_new();
+
+	    h->dir_map_add(c, m);
+	    h->dir_addr_set(c, child_addr);
+
+	    h->dir_add(d, c);
+
 	    free(child_addr);
 	}
     }
@@ -172,15 +177,15 @@ size_t server_read ( void **ptr, size_t size, void *object, struct hiena_transac
     return 0;
 }
 
-int server_close ( void *object, struct hiena_transaction *h ) {
-    if ( object == NULL || h == NULL )
+int server_close ( void *object ) {
+    if ( object == NULL )
 	return -1;
     
-    struct server_localfile_own *own = h->own;
-    if ( own == NULL ) return -1;
+    struct server_localfile_own *own = object;
+
     /* close dir */
     if ( own->dirp != NULL && own->fp == NULL ) {
-	int err = closedir( (DIR *)object );
+	int err = closedir( (DIR *)own->dirp );
 	if ( err == -1 ) {
 	    if ( errno == EBADF ) {
 		;
@@ -191,7 +196,7 @@ int server_close ( void *object, struct hiena_transaction *h ) {
 
     /* close file */
     if ( own->fp != NULL && own->dirp == NULL ) {
-	int err = fclose( (FILE *)object );
+	int err = fclose( (FILE *)own->fp );
 	if ( err == EOF ) {
 	    if ( errno == EBADF ) {
 		;
@@ -199,9 +204,5 @@ int server_close ( void *object, struct hiena_transaction *h ) {
 	    return -1;
 	}
     }
-
-    destroy_own( h->own );
-    h->own = NULL;
-
     return 0;
 }

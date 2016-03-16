@@ -1,0 +1,28 @@
+ATTACKS DESIGN
+--------------
+
+The purpose of this document is to journal possible attacks against the system as I think them up.  Later I can try to implement these attacks to test their plausibility.
+
+
+
+TROJAN SHARED LIBRARY
+---------------------
+/usr/lib/cosmosfs/dpserver/*.so
+this will execute with the same user priviledges as the calling process.
+
+
+
+
+
+ATTACKS DESIGN - JOURNAL OF BAD LOGIC
+-------------------------------------
+
+
+EVIL SHARED LIBRARY ARBITRARY CODE INJECTION - illogical
+--------------------------------------------
+/usr/lib/cosmosfs/dpserver/*.so 
+constructed so as to write a hostile function into process space at a ptr given in the function arguments.
+
+you're so stupid because...
+if you are an evil shared library, and your function gets called.  just do something evil.  why inject?  You've already got the same privilidges as the calling process, dumb ass.
+

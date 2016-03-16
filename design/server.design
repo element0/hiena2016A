@@ -1,0 +1,82 @@
+SERVER DESIGN
+-------------
+
+In the context of hiena, serves the domain of the dpak.
+
+dpak/{addr} --> dpak/{server} --> domain stream
+
+
+
+INTERFACE
+---------
+
+to keep it simple, create a shared object library with the following functions:
+
+    stat()
+    open()
+    close()
+    lock()
+    trylock()
+    unlock()
+    read()
+    write()
+
+stat() and open() should take a "void * addr"
+the other functions take a "void * object"
+
+read-write functions take a "struct hiena_server_transaction *" object which
+references a domain object id (dpak id) and a callback API.
+
+a server has two ways of serving information:
+   - fill a buffer
+   - API manipulates the domain object's directory
+
+(note: the API sort of mimic POSIX as much as possible, but skew a little.)
+
+
+RETURN TYPES
+------------
+
+// if the "addr" resolves to a stream, return a "buffer" and "size".
+
+addr --> server --> buf, size
+
+
+// if the "addr" resolves to a directory...
+
+addr --> server --> dirent[*]
+{
+    . dir_new() --> dir
+
+    dirent[*]
+    {
+	dirent/{d_name} +> map_new_free($1, strlen($1), "name") --> m
+	. dir_new() --> c
+	m --> map_add(c, m) .
+	c --> dir_add(dir, c) .
+
+	c/{addr} = $$/{addr} "/" dirent/{d_name}
+    }
+
+    directory_set($$, dir);
+}
+
+
+
+
+
+INSTALLATION
+------------
+
+the installed name of each server should be its signature plus ".so" extension.
+ie.
+    file.so
+    membuf.so
+
+these should be installed by the admin only, but are expected to run from
+userspace - namely, from a fuse mount process.
+
+install them in:
+    /usr/local/lib/cosmosfs/dpserver/
+
+

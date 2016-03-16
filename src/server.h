@@ -30,13 +30,14 @@ struct hiena_serverops {
     FILE       *(*fopen) (Hpat *, const char *);	/* := !NULL */
     void       *(*mmap)  (void *, size_t, int, int, int, off_t);
     /* version 2 hiena */
-    char       *name;
+    char        *name;
     dpakstream  *(*open)  (addr_t *, const char *mode, dpakserver *);
     void         (*close) (dpakstream *);
     boundslen_t *(*read)  ( void *, boundslen_t count, boundslen_t size, dpakstream *ds );
     boundslen_t *(*write) (dpakstream *ds, void *buf, boundslen_t size);
 };
 /*--------*/
+
 
 
 #endif /*!_HIENA_SERVER_H_*/

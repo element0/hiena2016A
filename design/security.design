@@ -1,0 +1,21 @@
+SECURITY DESIGN
+---------------
+
+This document outlines my approach to security while coding.
+
+
+POINTER PASSING: AS NEEDED BASIS
+--------------------------------
+
+In general, not anticipating any specific attack, a function
+should only be given access to memory that it needs to change or read.
+Only pass pointers that will be directly manipulated by a function.
+
+
+
+OBJECT REFERENCES: VIA ID NUMBERS
+---------------------------------
+
+If a function needs to reference another object, but won't read-or-write
+any of its data, register the object in an index and pass an id number.
+

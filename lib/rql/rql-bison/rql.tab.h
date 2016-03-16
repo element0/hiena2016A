@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_RQL_SRC_RQL_BISON_RQL_TAB_H_INCLUDED
-# define YY_RQL_SRC_RQL_BISON_RQL_TAB_H_INCLUDED
+#ifndef YY_RQL_RQL_TAB_H_INCLUDED
+# define YY_RQL_RQL_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef RQLDEBUG
 # if defined YYDEBUG
@@ -48,7 +48,7 @@
 extern int rqldebug;
 #endif
 /* "%code requires" blocks.  */
-#line 1 "src/rql-bison/rql.y" /* yacc.c:1909  */
+#line 1 "rql.y" /* yacc.c:1909  */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +63,7 @@ extern int rqldebug;
 
 typedef void *yyscan_t;		/* FLEX SETUP */
 
-#line 67 "src/rql-bison/rql.tab.h" /* yacc.c:1909  */
+#line 67 "rql.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef RQLTOKENTYPE
@@ -100,12 +100,12 @@ typedef void *yyscan_t;		/* FLEX SETUP */
 typedef union RQLSTYPE RQLSTYPE;
 union RQLSTYPE
 {
-#line 21 "src/rql-bison/rql.y" /* yacc.c:1909  */
+#line 21 "rql.y" /* yacc.c:1909  */
 
     int   num;
     char *str;
 
-#line 109 "src/rql-bison/rql.tab.h" /* yacc.c:1909  */
+#line 109 "rql.tab.h" /* yacc.c:1909  */
 };
 # define RQLSTYPE_IS_TRIVIAL 1
 # define RQLSTYPE_IS_DECLARED 1
@@ -115,4 +115,4 @@ union RQLSTYPE
 
 int rqlparse (yyscan_t *scanner, Hsp *h);
 
-#endif /* !YY_RQL_SRC_RQL_BISON_RQL_TAB_H_INCLUDED  */
+#endif /* !YY_RQL_RQL_TAB_H_INCLUDED  */

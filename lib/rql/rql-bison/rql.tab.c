@@ -70,7 +70,7 @@
 
 /* Copy the first part of user declarations.  */
 
-#line 74 "src/rql-bison/rql.tab.c" /* yacc.c:339  */
+#line 74 "rql.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -90,8 +90,8 @@
 
 /* In a future release of Bison, this section will be replaced
    by #include "rql.tab.h".  */
-#ifndef YY_RQL_SRC_RQL_BISON_RQL_TAB_H_INCLUDED
-# define YY_RQL_SRC_RQL_BISON_RQL_TAB_H_INCLUDED
+#ifndef YY_RQL_RQL_TAB_H_INCLUDED
+# define YY_RQL_RQL_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef RQLDEBUG
 # if defined YYDEBUG
@@ -108,7 +108,7 @@
 extern int rqldebug;
 #endif
 /* "%code requires" blocks.  */
-#line 1 "src/rql-bison/rql.y" /* yacc.c:355  */
+#line 1 "rql.y" /* yacc.c:355  */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,7 +123,7 @@ extern int rqldebug;
 
 typedef void *yyscan_t;		/* FLEX SETUP */
 
-#line 127 "src/rql-bison/rql.tab.c" /* yacc.c:355  */
+#line 127 "rql.tab.c" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef RQLTOKENTYPE
@@ -160,12 +160,12 @@ typedef void *yyscan_t;		/* FLEX SETUP */
 typedef union RQLSTYPE RQLSTYPE;
 union RQLSTYPE
 {
-#line 21 "src/rql-bison/rql.y" /* yacc.c:355  */
+#line 21 "rql.y" /* yacc.c:355  */
 
     int   num;
     char *str;
 
-#line 169 "src/rql-bison/rql.tab.c" /* yacc.c:355  */
+#line 169 "rql.tab.c" /* yacc.c:355  */
 };
 # define RQLSTYPE_IS_TRIVIAL 1
 # define RQLSTYPE_IS_DECLARED 1
@@ -175,11 +175,11 @@ union RQLSTYPE
 
 int rqlparse (yyscan_t *scanner, Hsp *h);
 
-#endif /* !YY_RQL_SRC_RQL_BISON_RQL_TAB_H_INCLUDED  */
+#endif /* !YY_RQL_RQL_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 183 "src/rql-bison/rql.tab.c" /* yacc.c:358  */
+#line 183 "rql.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -1281,60 +1281,60 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 43 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 43 "rql.y" /* yacc.c:1646  */
     { 
 		    return; 
 		}
-#line 1289 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1289 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 58 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 58 "rql.y" /* yacc.c:1646  */
     {
 		    /* at this point the SQL workspace inside the Hsp
 		       should be primed.  'do_select()' pulls the trigger. */
 		    do_select();
 		    printf("select_stmt.\n\n");
 		}
-#line 1300 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1300 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 67 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 67 "rql.y" /* yacc.c:1646  */
     {
 		    printf("select_stmt.\n\n");
 		}
-#line 1308 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1308 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 74 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 74 "rql.y" /* yacc.c:1646  */
     {
 		    printf("result_expr_list: all_or_distinct result_column_list\n");
 		}
-#line 1316 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1316 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 87 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 87 "rql.y" /* yacc.c:1646  */
     { 
 		    rescol((yyvsp[0].str));
 		    printf("result_column: %s\n", (yyvsp[0].str));
 		}
-#line 1325 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1325 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 93 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 93 "rql.y" /* yacc.c:1646  */
     { 
 		    rescol((yyvsp[0].str));  
 		    printf("result_column: %s\n", (yyvsp[0].str));
 		}
-#line 1334 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1334 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 101 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 101 "rql.y" /* yacc.c:1646  */
     {
 		    if(strcmp((yyvsp[0].str), "selection_children")==0) {
 			from(TAB_SEL_CHILD);
@@ -1343,92 +1343,92 @@ yyreduce:
 		    }
 		    printf("from_clause: FROM table_or_subquery_list\n");
 		}
-#line 1347 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1347 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 113 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 113 "rql.y" /* yacc.c:1646  */
     { 
 		    printf("table_or_subquery_list: %s\n", (yyvsp[0].str));
 		}
-#line 1355 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1355 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 119 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 119 "rql.y" /* yacc.c:1646  */
     {
 		    printf("where_clause: WHERE expr\n");
 		}
-#line 1363 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1363 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 130 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 130 "rql.y" /* yacc.c:1646  */
     {
 		    push(STRING_LITERAL, (yyvsp[0].str));
 		}
-#line 1371 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1371 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 136 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 136 "rql.y" /* yacc.c:1646  */
     {
 		    push(EXPR_COLUMN, (yyvsp[0].str));
 		}
-#line 1379 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1379 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 142 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 142 "rql.y" /* yacc.c:1646  */
     { 
 		    push(EXPR_BINARY_IS, NULL);
 		    printf("expr: %s IS %s\n", (yyvsp[-2].str), (yyvsp[0].str));
 		}
-#line 1388 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1388 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 147 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 147 "rql.y" /* yacc.c:1646  */
     { 
 		    printf("expr: %s IS NOT %s\n", (yyvsp[-3].str), (yyvsp[0].str));
 		}
-#line 1396 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1396 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 151 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 151 "rql.y" /* yacc.c:1646  */
     { 
 		    printf("expr: %s LIKE %s\n", (yyvsp[-2].str), (yyvsp[0].str));
 		}
-#line 1404 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1404 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 155 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 155 "rql.y" /* yacc.c:1646  */
     { 
 		    printf("expr: %s NOT LIKE %s\n", (yyvsp[-3].str), (yyvsp[0].str));
 		}
-#line 1412 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1412 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 161 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 161 "rql.y" /* yacc.c:1646  */
     { 
 		    printf("all_or_distinct: empty\n");
 		}
-#line 1420 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1420 "rql.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 165 "src/rql-bison/rql.y" /* yacc.c:1646  */
+#line 165 "rql.y" /* yacc.c:1646  */
     { 
 		    printf("all_or_distinct: ALL\n");
 		}
-#line 1428 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1428 "rql.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1432 "src/rql-bison/rql.tab.c" /* yacc.c:1646  */
+#line 1432 "rql.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1656,7 +1656,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 171 "src/rql-bison/rql.y" /* yacc.c:1906  */
+#line 171 "rql.y" /* yacc.c:1906  */
 
 
 /* leave return type blank - bison caveat */

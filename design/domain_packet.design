@@ -3,12 +3,23 @@ domain packet design.
 objects:
 
     domain packet {
-	server();
-	addr;
-	statbuf;
-	filter();
-	scanner();  // from access path cosm types
+	serv
+	addr
+	stat
+	filt
+	scan		// from {access path}/{cosm}/{types}
 
-	domain map;
-	child list;
+        valu
+
+	map
+	dir
     }
+
+
+domain packet/{dir}/{hiena::dirent}
+
+
+DOMAIN DIRECTORY
+----------------
+
+for a given domain packet, there is a directory of contents.  this is the "child table".  it can be searched like a sql table.

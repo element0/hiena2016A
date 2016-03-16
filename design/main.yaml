@@ -14,15 +14,15 @@ core_files_list :
     - /usr/lib/cosmosfs/bin/hc	# hiena compiler
     - /usr/lib/cosmosfs/bin/fc	# fudge compiler
     - /usr/lib/cosmosfs/rql/fudgeql.so	# access path query language interpreter
-    - /usr/lib/cosmosfs/dpserver/
-    - /usr/lib/cosmosfs/dpserver/args.so
-    - /usr/lib/cosmosfs/dpserver/envar.so
-    - /usr/lib/cosmosfs/dpserver/shvar.so
-    - /usr/lib/cosmosfs/dpserver/file.so
-    - /usr/lib/cosmosfs/dpserver/https.so
-    - /usr/lib/cosmosfs/dpserver/ssh.so
-    - /usr/lib/cosmosfs/dpserver/membuf.so
-    - /usr/lib/cosmosfs/dpserver/dpak.so
+    - /usr/lib/cosmosfs/dserver/
+    - /usr/lib/cosmosfs/dserver/args.so
+    - /usr/lib/cosmosfs/dserver/envar.so
+    - /usr/lib/cosmosfs/dserver/shvar.so
+    - /usr/lib/cosmosfs/dserver/file.so
+    - /usr/lib/cosmosfs/dserver/https.so
+    - /usr/lib/cosmosfs/dserver/ssh.so
+    - /usr/lib/cosmosfs/dserver/membuf.so
+    - /usr/lib/cosmosfs/dserver/dpak.so
     - /var/
     - /var/cache/
     - /var/cache/cosmosfs/
@@ -68,9 +68,11 @@ source_files_list :
     - cosmosfs/src/fstackfr.[ch]
     - cosmosfs/src/fusemain.[ch]
     - cosmosfs/src/hsp.[ch]		# might be replaced by fstack
+    - cosmosfs/src/limits.h
     - cosmosfs/src/list.[ch]
     - cosmosfs/src/map.[ch]
     - cosmosfs/src/mapo.[ch]
+    - cosmosfs/src/paths.h
     - cosmosfs/src/ss.[ch]
     - cosmosfs/src/hiena/
     - cosmosfs/src/hiena/Makefile

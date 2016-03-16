@@ -1,0 +1,27 @@
+SCANNERLIB
+----------
+
+The scannerlib, aka _cosm/types
+
+is the cascading library of all available hiena scanners
+at any given location in the file tree.
+
+The global scannerlib object has an index of all grammar rules
+identified by GUID rather than by name.
+The index is a mapping between local file-branch relative grammar rule name
+and global grammar rule GUID.
+
+scannerlib
+    guid index
+
+
+
+RULE GUID's
+-----------
+
+GUID's are useful because grammar rules compile individually
+and some compiled grammar rules may be identical between different local 
+grammars.  So, firstly, it saves space, secondly, it allows a grammar
+to include another by reference, without redefining the grammar,
+   and as a consequence, rules can be updated independently of the entire grammar.
+

@@ -1,0 +1,13 @@
+SERVER MODULE: file
+-------------------
+
+This module takes an address string and serves an object from the host
+filesystem.
+
+
+DIRECTORY OR FILE
+-----------------
+
+If object is a file, returns data from file, in a buffer allocated by caller.
+
+If object is a directory, returns a list of directory entries for the domain.
