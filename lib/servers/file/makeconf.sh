@@ -1,0 +1,5 @@
+libtoolize -c
+
+
+
+autoreconf -i
