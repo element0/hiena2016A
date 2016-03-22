@@ -359,8 +359,8 @@ typedef struct hiena_parse_packet
 
 
 
-    /* SCANNER NOTE */
-    /* scanners are provided by the access path structure
+    /** SCANNER NOTE */
+    /** scanners are provided by the access path structure
      * they are noted here because of how they 
      * affect this structure.
      * each scanner is provided at the access path node level
@@ -371,8 +371,8 @@ typedef struct hiena_parse_packet
      * outputs to child map (rooted at "first_child_posnode")
      */
 
-    /* PROPERTY MAP */
-    /* map of attributes, properties, features, etc.
+    /** PROPERTY MAP */
+    /** map of attributes, properties, features, etc.
      * which are NOT children in the directory hierarchy.
      */
     Mapn     *prop_root;

@@ -4,7 +4,7 @@ architecture: linux
 
 
    */
-#include "../server.h"	/* generic server header for all hiena server modules */
+#include "../../../include/hiena/server_module.h"	/* generic server header for all hiena server modules */
 // ON IT'S WAY OUT... #include "../../src/hdirent.h" /* hiena directory entries */
 #include <dirent.h>	/* DIR */
 #include <sys/stat.h>	/* stat() */
@@ -74,6 +74,7 @@ void *server_open ( void *addr, const char *mode ) {
 		break;
 
 	}
+	destroy_own(own);
 	return NULL;
 
     }
@@ -121,7 +122,7 @@ void *server_open ( void *addr, const char *mode ) {
     return NULL;
 }
 
-size_t server_read ( void **ptr, size_t size, void *object, struct hiena_server_transaction *h ) {
+size_t server_read ( void * ptr, size_t size, void * object, struct hiena_server_callbacks * h ) {
     if( ptr == NULL || size == 0 || object == NULL || h == NULL )
 	return 0;
 
@@ -132,34 +133,58 @@ size_t server_read ( void **ptr, size_t size, void *object, struct hiena_server_
 
     /* read dir */
     if ( own->dirp != NULL && own->fp == NULL ) {
-	printf( "DIR:\n");
 
-	void  *m, *c, *d = h->dir_new();
+	void  * m;
+	void  * c;
+	void  * d;
 	struct dirent *dp;
-	char  *d_name_var, *child_addr;
-	size_t d_name_len, child_addr_len;
+	char  * d_name_var;
+	char  * child_addr;
+	size_t d_name_len;
+	size_t child_addr_len;
 
+	/** create hiena directory object */
+	d = h->dir_new();
 
+	/** read each directory entry from server,
+	 *  create children of 'd'.
+	 */
 	while (( dp = readdir( own->dirp )) != NULL ) {
 
+	    /** get child's basename 'd_name_var'
+	     */
 	    d_name_len 	= strlen(dp->d_name);
 	    d_name_var	= strndup(dp->d_name, d_name_len+1);
 	    
+	    /** create child's filepath 'child_addr'
+	     */
 	    child_addr_len = strlen( own->addr ) + 1 + d_name_len + 1;
 	    child_addr     = malloc( child_addr_len * sizeof(char) );
-
 	    snprintf( child_addr, child_addr_len, "%s/%s", own->addr, d_name_var );
 	    child_addr[ child_addr_len - 1 ] = '\0';
 
-	    printf( "child_addr: %s\n", child_addr );
 
-
+	    /** create a new attribute map for child
+	     *  with its basename as the map value.
+	     */
 	    m = h->map_new_freeagent( d_name_var, d_name_len, "name" ); 
+	    free(d_name_var);
+
+	    /** create new child object
+	     */
 	    c = h->dir_new();
 
-	    h->dir_map_add(c, m);
-	    h->dir_addr_set(c, child_addr);
 
+	    /** add the attribute map to the child
+	     */
+	    h->dir_map_add(c, m);
+
+	    /** set child's domain source address and server module name
+	     */
+	    h->dir_addr_set(c, child_addr, "file" );
+
+	    /** add child to directory 'd'
+	     */
 	    h->dir_add(d, c);
 
 	    free(child_addr);
@@ -168,9 +193,7 @@ size_t server_read ( void **ptr, size_t size, void *object, struct hiena_server_
 
     /* read file */
     if ( own->fp != NULL && own->dirp == NULL ) {
-	void *buf = malloc(sizeof(char)*size);
-	size_t rread = fread( buf, 1, size, own->fp );
-	*ptr = buf;
+	size_t rread = fread( ptr, 1, size, own->fp );
 	return rread;
     }
 
@@ -204,5 +227,6 @@ int server_close ( void *object ) {
 	    return -1;
 	}
     }
+    destroy_own(own);
     return 0;
 }

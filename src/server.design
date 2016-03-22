@@ -1,4 +1,4 @@
-== DESIGN: addr_t ==
+== DESIGN: domain parcel addresses ==
 
 an address is relative to a server.
 its format should be determined by a server.
@@ -6,6 +6,7 @@ at the very least we need a pointer and a size to store the address.
 the server can put anything into that space.
 
 server and address should be set at the same time for a dpak.
+
 it would be difficult to determine server from address
 for these reasons:
 
@@ -25,9 +26,9 @@ for these reasons:
 
 --------
 
-== DESIGN: dpakserver ==
+== DESIGN: domain parcel server ==
 
-the dpakserver might be more appropriately named "resource server" or "resource feed".
+the dpakserver might be more appropriately named "resource server".
 
 looking from the point of view of a network
 each host on the network has a set of resources
@@ -51,7 +52,7 @@ there only need be one dpakserver per resource - or subresource
 
 
 a dpak's address and server can be visualized like a URL
-which URL is internal to hiena - not used by the user directly
+this URL is internal to hiena - not used by the user directly
 
 ala
 	dpak addr = host:resource:addr
@@ -61,7 +62,7 @@ ala
 	    server = resource
 	    addr   = addr
 
-dpak addresses are a level above URL's.  A URL is a net address.
+dpak addresses are a level above URL's.  A URL is a network address.
 a memory address just uses a integer value.
 a file address uses a path string value.
 
@@ -101,14 +102,5 @@ an io queue can be shared between unreachable hosts.
 
 
 
-
---------
-
-== API: dpakserver ==
-
-/* these apply uniformly to all servers: mem, file, dir, http, ssh, etc. */
-
-FILE *(*open)( addr_t *addr, const char *mode, dpakserver *server );
-boundslen_t (*read)(FILE *, void *buf, boundslen_t size);
 
 --------

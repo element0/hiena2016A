@@ -1,25 +1,5 @@
 #include "filesrv.c"
-
-
-void *dir_new() {
-    return NULL;
-}
-
-int dir_addr_set( void *dir, char *addr ) {
-    return 0;
-}
-
-int dir_map_add( void *dir, void *map ) {
-    return 0;
-}
-
-int dir_add( void *dst_dir, void *src_dir ) {
-    return 0;
-}
-
-void *map_new_freeagent( void *buf, size_t len, const char *pname ) {
-    return NULL;
-}
+#include "../../../src/server_callbacks.c"
 
 
 int main( int argc, char * argv[] ) {
@@ -28,8 +8,8 @@ int main( int argc, char * argv[] ) {
 	return -1;
     }
 
-    struct hiena_server_transaction *h = malloc( sizeof(struct hiena_server_transaction));
-    memset( h, 0, sizeof(struct hiena_server_transaction) );
+    struct hiena_server_callbacks *h = malloc( sizeof(struct hiena_server_callbacks));
+    memset( h, 0, sizeof(struct hiena_server_callbacks) );
 
     h->dir_new      = dir_new;
     h->dir_addr_set = dir_addr_set;

@@ -4,7 +4,7 @@
 #define _HIENA_AXPADEX_H_
 
 #include <kclangc.h>		/* Kyoto Cabinet */
-#include <fuse_low_level.h>
+#include <fuse_lowlevel.h>
 #include "axpa.h"
 
 typedef fuse_ino_t axno_t;	/* UNSIGNED. if you change it, rewrite the overflow logic */

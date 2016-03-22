@@ -11,8 +11,8 @@ void    addr_t_cleanup( addr_t *a );
 typedef struct hiena_parse_packet_addr
 {
     /* SERVER RELATIVE ADDRESS */
-    void     *ptr;
     size_t    size;
+    void     *ptr;
 
 
     /* SCANNER RELATIVE ADDRESS */
@@ -25,9 +25,6 @@ typedef struct hiena_parse_packet_addr
        and expresses a scanner-relative address in the data
        sourced by the parent ppak.  */
 
-    /* What the hell is this? */
-    frag_t   *parfrag;
-    
 }addr_t;
 /*--------*/
 
