@@ -1,7 +1,10 @@
 /* HIENA_HIENAFS_C */
 
+#include <sys/stat.h>	/* stat */
 #include "../progconf/paths.h"
 #include "serverlib.c"
+#include "domainstream.c"
+#include "accesspathdb.c"
 
 /**
  * The Hiena file system object.
@@ -11,6 +14,8 @@ struct hiena_file_system
     void * serverlib;	/**< The host resource servers to serve the domain. */
     void * ax;	/**< The access path database. */
     void * dx;	/**< The domain map database. */
+    /* TEMPORARY WORKING STRUCTURES */
+    struct hiena_domainstream * rootds;
 };
 
 struct hiena_file_system *new_hienafs() {
@@ -23,6 +28,11 @@ struct hiena_file_system *new_hienafs() {
 void hienafs_cleanup( struct hiena_file_system *hnfs ) {
     if( hnfs == NULL ) return;
     //if( hnfs->ax != NULL ) axpadex_cleanup(hnfs->ax);
+    serverlib_cleanup( hnfs->serverlib );
+    domainstream_cleanup( hnfs->rootds );	/**< temporary root ds destructor
+						  should be taken care of by
+						  cleaning up domainstream database */
+    accesspathdb_cleanup( hnfs->ax );
     free( hnfs );
 }
 
@@ -75,23 +85,48 @@ abort:
     return 0;
 }
 
+void hienafs_init_root_domainstream( struct hiena_file_system * hnfs ) {
+    struct hiena_domainstream * ds = domainstream_new();
+    if( ds != NULL )
+	hnfs->rootds = ds;	/**< temporary place for rootds
+				  the appropriate place is inside the 
+				  domainstream database */
+}
+
+void hienafs_init_domainstream_db ( struct hiena_file_system * hnfs ) {
+}
+
+int hienafs_init_accesspath_db ( struct hiena_file_system * hnfs ) {
+    if( hnfs == NULL ) return -1;
+    Axpadb *ax = accesspathdb_init();
+    if( ax == NULL ) return -1;
+    hnfs->ax = ax;
+    return 1;
+}
+
 /**
  * Create and initialize a new file system object.
  * Note: this does not init the dpakroot,
  * you should use 'hienafs_parse_cmdline( argc, argv )' for that.
  */
-struct hiena_file_system *hienafs_init() {
+struct hiena_file_system *hienafs_init () {
     struct hiena_file_system *hnfs = new_hienafs();
 
-    hienafs_config( hnfs );
-    hienafs_load_domain_servers( hnfs );	/* located at /usr/lib/cosmosfs/dpserver */
+    hienafs_config( hnfs ); /* TODO */
+    hienafs_load_domain_servers( hnfs );	/* lib paths wired into ../progconf/paths.h */
+    hienafs_init_domainstream_db( hnfs );	/**< creates new database
+						  and creates root domainstream */
+    hienafs_init_accesspath_db( hnfs );		/**< creates new access path database
+						  and creates root access path */
     hienafs_load_rql_module( hnfs );
     hienafs_init_lookup_strings( hnfs );
+    /*
     if(!hienafs_init_access_paths( hnfs )) {
 	fprintf(stderr, "hienafs_init: hienafs_init_access_paths failed. returning NULL.\n");
 	hienafs_cleanup(hnfs);
 	return NULL;
     }
+    */
 
     return hnfs;
 }
@@ -113,37 +148,29 @@ int hienafs_set_dpakroot ( struct hiena_file_system * hnfs, void * dpak ) {
     return 1;
 }
 
+void hienafs_usage( char * execname ) {
+    printf("usage: %s [fuseargs] mountpoint sourceurl\n", execname );
+}
+
 int hienafs_parse_cmdline ( struct hiena_file_system * hnfs, int argc, char *argv[] ) { /* == num_source_args */
-    if (argc < 2) return 0;
-    /*
-
-    Dpak *rootdpak = new_dpak(NULL);
-    Dpak *newdpak;
-    int i = 1;
-    int valid_adds = 0;
-
-    if( rootpak == NULL ) {
-	perror( "hienafs can't init rootpak, abort.\n" );
+    if (argc < 2) {
+	hienafs_usage( argv[0] );
 	return 0;
     }
 
-    
-    while (argv[i][0] != '-' && i != argc) {
-	newdpak = new_dpak_with_addr_str( argv[i], strlen(argv[i]), rootdpak );
-	if( newdpak != NULL ) {
-	    dpak_add_cluster_member( rootdpak, dpak );
-	    valid_adds++;
-	}
-	i++;
-    }
-    if ( valid_adds > 0 ) {
-	hienafs_set_dpakroot( hienafs, rootdpak );
-    } else {
-	dpak_cleanup( rootdpak );
+    struct stat sbuf;
+    int status;
+    status = stat(argv[argc-1], &sbuf);
+
+    if( !(S_ISDIR(sbuf.st_mode) || S_ISREG(sbuf.st_mode)) ) {
+	printf("hienafs: please use a file or directory as the source.\n");
+	hienafs_usage( argv[0] );
 	return 0;
     }
-    return i-1;
-    */
+
+    /* SET ADDR OF ROOT DSTREAM */
+    /* SET SERVER OF ROOT DSTREAM */
+
     return 1;
 }
 

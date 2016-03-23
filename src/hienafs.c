@@ -1,5 +1,7 @@
 
-#define FUSE_USE_VERSION 26
+#define FUSE_USE_VERSION 30
+
+#include <config.h>
 
 #include <fuse_lowlevel.h>
 #include <stdio.h>
@@ -14,9 +16,9 @@
 
 
 
+
 void hiena_destroy ( void * hnfsptr ) {
     struct hiena_file_system * hnfs = hnfsptr;
-    serverlib_cleanup( hnfs->serverlib );
 /*
     hienafs_unload_domain_servers( );
     hienafs_unload_rql_module( hnfs );
@@ -24,9 +26,12 @@ void hiena_destroy ( void * hnfsptr ) {
     hienafs_cleanup_lookup_strings( hnfs );
     hienafs_cleanup_access_paths( hnfs );
 */
+    hienafs_cleanup( hnfs );
 }
 
+
 static int hiena_stat ( void *hnfs, fuse_ino_t ino, struct stat *stbuf ) {
+    return -1;
     /* alters "stbuf" */
 
 	/*
@@ -40,8 +45,8 @@ static int hiena_stat ( void *hnfs, fuse_ino_t ino, struct stat *stbuf ) {
     } else {
 	return -1;
     }
-*/
     return 0;
+*/
 
 }
 
@@ -123,7 +128,9 @@ static void hiena_readdir ( fuse_req_t req, fuse_ino_t ino, size_t size, off_t o
 
 	/*
     if ( !hienafs_access_path_verify( hnfs, ino ) ) {
-	fuse_reply_err( req, ENOTDIR );
+
+*/	fuse_reply_err( req, ENOTDIR );
+    /*
     }else{
 	struct dirbuf b;
 	void *cursor = hienafs_access_path_branches_new_cursor( hnfs, ino );
@@ -151,11 +158,11 @@ static void hiena_readdir ( fuse_req_t req, fuse_ino_t ino, size_t size, off_t o
 
 /*---- TBD ----*/
 static void hiena_open ( fuse_req_t req, fuse_ino_t ino, struct fuse_file_info *fi ) {
-    fuse_reply_err( req, EISDIR );
+    //fuse_reply_err( req, EISDIR );
     /* OR */
     fuse_reply_err( req, EACCES );
     /* OR */
-    fuse_reply_open( req, fi );
+    //fuse_reply_open( req, fi );
 }
 
 static void hiena_read ( fuse_req_t req, fuse_ino_t ino, size_t size, off_t off,
@@ -180,24 +187,22 @@ static struct fuse_lowlevel_ops hiena_oper = {
 };
 
 int main ( int argc, char *argv[] ) {
-	
 
     struct hiena_file_system *hienafs = hienafs_init();
 
-    int num_source_args;
+    int num_source_args = 0;
+    
     if ( (num_source_args = hienafs_parse_cmdline( hienafs, argc, argv )) == 0 ) {
-	printf("usage: %s sourceurl [sourceurl2 ...] [fuseargs] mountpoint\n", argv[0] );
 	hienafs_cleanup( hienafs );
 	return -1;
     }
- 
-    struct fuse_args args = FUSE_ARGS_INIT(argc - num_source_args, &argv[num_source_args-1]);
+    struct fuse_args args = FUSE_ARGS_INIT(argc - num_source_args, argv);
     struct fuse_chan *ch;
     char *mountpoint;
     int err = -1;
 
-    if((fuse_parse_cmdline( &args, &mountpoint, NULL, NULL ) != -1)
-       && (ch = fuse_mount( mountpoint, &args ) != NULL) ) {
+    if(fuse_parse_cmdline( &args, &mountpoint, NULL, NULL ) != -1 &&
+        (ch = fuse_mount( mountpoint, &args )) != NULL ) {
 	
 	struct fuse_session *se;
 

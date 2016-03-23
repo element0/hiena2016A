@@ -34,7 +34,8 @@ struct raygan_general_object
  * this method name could change.  but I want to keep it simple.
  */
 void cleanup_garbage( void * );
-void gob_add_nextgarb( void * dstp, void * srcp );
+int gob_set_garbage( void * dstp, void * srcp );
+int gob_add_nextgarb( void * dstp, void * srcp );
 void gob_set_cleanup( void * dstp, void * srcp );
 
 

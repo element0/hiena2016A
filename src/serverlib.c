@@ -7,9 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include "../progconf/paths.h"
 #include <gob.h>
 #include <hiena/server_module.h>
+
 #include <libgen.h>
 #include "server_callbacks.c"
 #include "serverlib.h"
@@ -154,13 +156,16 @@ void * serverlib_init ( size_t len, void * serverlibpathsrc ) {
 
     
 #if HAVE_LTDL_H
-    int err;
+    int err = -1;
     /* LTDL_SET_PRELOADED_SYMBOLS(); */
 
     serverlib->ltdl = lt_dlinit();
     if( serverlib->ltdl == 0 )
     {
 	err = lt_dlforeachfile( serverlibpath, serverlibentry_init, &(serverlib->firstentry) );
+	if( err == 0 ) {
+	    printf("TESTED: serverlib loaded.\n");
+	}
     }
 #endif
     free( serverlibpath );
