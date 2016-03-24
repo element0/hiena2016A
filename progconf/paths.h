@@ -4,8 +4,11 @@
 #define _HIENA_PATHS_H_
 
 #define HIENA_SERVERLIB_PATH   "/usr/local/lib/hiena/servers:/home/raygan/usr/lib/hiena/servers"
-#define HIENA_SERVERMODULE_EXT "so"
 
+#define HIENA_LOOKUP_MODULE_PATH "/usr/local/lib/hiena/lookup:/home/raygan/usr/lib/hiena/lookup"
+
+/* RETIRE: */
+#define HIENA_SERVERMODULE_EXT "so"
 #define RQL_MODULE_PATH		"/usr/lib/cosmosfs/rql"
 #define DPAK_INDEX_PATH		"/var/lib/cosmosfs/dp"
 #define AXPA_INDEX_PATH		"/var/lib/cosmosfs/ax"

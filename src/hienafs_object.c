@@ -5,6 +5,7 @@
 #include "serverlib.c"
 #include "domainstream.c"
 #include "accesspathdb.c"
+#include "lookup_module.c"
 
 /**
  * The Hiena file system object.
@@ -14,6 +15,7 @@ struct hiena_file_system
     void * serverlib;	/**< The host resource servers to serve the domain. */
     void * ax;	/**< The access path database. */
     void * dx;	/**< The domain map database. */
+    void * lookup; /**< The lookup module. */
     /* TEMPORARY WORKING STRUCTURES */
     struct hiena_domainstream * rootds;
 };
@@ -33,6 +35,10 @@ void hienafs_cleanup( struct hiena_file_system *hnfs ) {
 						  should be taken care of by
 						  cleaning up domainstream database */
     accesspathdb_cleanup( hnfs->ax );
+    lookup_module_cleanup( hnfs->lookup );
+#if HAVE_LTDL_H
+    lt_dlexit();
+#endif
     free( hnfs );
 }
 
@@ -47,7 +53,12 @@ void hienafs_load_domain_servers( struct hiena_file_system *hnfs ) {
     hnfs->serverlib = sl;
 }
 
-void hienafs_load_rql_module( struct hiena_file_system *hnfs ) {
+void hienafs_load_lookup_module( struct hiena_file_system *hnfs ) {
+    if( hnfs == NULL ) return;
+    if( hnfs->lookup != NULL ) {
+	lookup_module_cleanup( hnfs->lookup );
+    }
+    hnfs->lookup = lookup_module_init( HIENA_LOOKUP_MODULE_PATH );
 }
 
 void hienafs_init_lookup_strings( struct hiena_file_system *hnfs ) {
@@ -118,7 +129,7 @@ struct hiena_file_system *hienafs_init () {
 						  and creates root domainstream */
     hienafs_init_accesspath_db( hnfs );		/**< creates new access path database
 						  and creates root access path */
-    hienafs_load_rql_module( hnfs );
+    hienafs_load_lookup_module( hnfs );
     hienafs_init_lookup_strings( hnfs );
     /*
     if(!hienafs_init_access_paths( hnfs )) {

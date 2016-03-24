@@ -1,0 +1,12 @@
+Hiena source: 'sqlinterp'
+
+SQL Interpreter Built-in
+
+using the "sql()" callback function, the lookup module can invoke an SQL statement on the current lookup frame.
+
+A domain stream has two abstract "tables".  A "child table" and an "attributes table".  An SQL statement may select FROM "children" or "attributes".
+
+A lookup frame may have other abstract tables.  this is tbd.
+
+3/23/2016 Raygan
+

@@ -1,13 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "hpat.h"
-#include "ppak.h"
-#include "axpa.h"
-#include "sslib.h"
-//#include "rql.h"
-#include "rql-bison/rql.tab.h"
-
 
 
 /*********** SQL SUPPORT FUNCS *********/

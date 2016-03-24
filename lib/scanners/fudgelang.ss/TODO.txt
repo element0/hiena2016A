@@ -1,5 +1,0 @@
-
-9-22-15 rh
-#include "rql.h"	// this will contain the request and reply structures
-#include "rqlapi.c"	// this will contain the calls fudgelange needs to operate
-

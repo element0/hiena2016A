@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_FUDGE_TAB_H_INCLUDED
-# define YY_YY_FUDGE_TAB_H_INCLUDED
+#ifndef YY_YY_FUDGE_BISON_H_INCLUDED
+# define YY_YY_FUDGE_BISON_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -40,20 +40,20 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 1 "fudge.y" /* yacc.c:1909  */
+#line 1 "fudge_bison.y" /* yacc.c:1909  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../src/hiena.h"		/* HIENA HEADER */
+#include "../../../include/lookup_module.h"		/* HIENA HEADER */
 
 typedef void* yyscan_t;			/* FLEX SETUP */
 
 /* callback args */
-#define nova(NOVARG) h->op->nova(h, NOVARG)
-#define sql(SQLSTR)  h->op->sql(h, SQLSTR)
+#define nova(NOVARG) h->op->add_va(h, NOVARG)
+#define sql(SQLSTR)  h->op->sql(h, SQLSTR, strlen(SQLSTR))
 
-#line 57 "fudge.tab.h" /* yacc.c:1909  */
+#line 57 "fudge_bison.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -78,19 +78,35 @@ typedef void* yyscan_t;			/* FLEX SETUP */
     ERE = 273
   };
 #endif
+/* Tokens.  */
+#define END 258
+#define NAME_SEG 259
+#define AT 260
+#define FLEXIVAL 261
+#define DOT 262
+#define LBRACE 263
+#define RBRACE 264
+#define SLASH 265
+#define ASSIGN 266
+#define EQ 267
+#define NOTEQ 268
+#define LT 269
+#define GT 270
+#define LTE 271
+#define GTE 272
+#define ERE 273
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 23 "fudge.y" /* yacc.c:1909  */
+#line 23 "fudge_bison.y" /* yacc.c:1909  */
 
-    int  c;
-    char *str;
-    Ppak *ppak;
+    int    c;
+    char * str;
 
-#line 94 "fudge.tab.h" /* yacc.c:1909  */
+#line 110 "fudge_bison.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -98,6 +114,6 @@ union YYSTYPE
 
 
 
-int yyparse (yyscan_t *scanner, Hsp *h);
+int yyparse (yyscan_t *scanner, Hframe *h);
 
-#endif /* !YY_YY_FUDGE_TAB_H_INCLUDED  */
+#endif /* !YY_YY_FUDGE_BISON_H_INCLUDED  */

@@ -63,7 +63,7 @@
 
 /* Copy the first part of user declarations.  */
 
-#line 67 "fudge.tab.c" /* yacc.c:339  */
+#line 67 "fudge_bison.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -82,9 +82,9 @@
 #endif
 
 /* In a future release of Bison, this section will be replaced
-   by #include "fudge.tab.h".  */
-#ifndef YY_YY_FUDGE_TAB_H_INCLUDED
-# define YY_YY_FUDGE_TAB_H_INCLUDED
+   by #include "y.tab.h".  */
+#ifndef YY_YY_FUDGE_BISON_H_INCLUDED
+# define YY_YY_FUDGE_BISON_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -93,20 +93,20 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 1 "fudge.y" /* yacc.c:355  */
+#line 1 "fudge_bison.y" /* yacc.c:355  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../src/hiena.h"		/* HIENA HEADER */
+#include "../../../include/lookup_module.h"		/* HIENA HEADER */
 
 typedef void* yyscan_t;			/* FLEX SETUP */
 
 /* callback args */
-#define nova(NOVARG) h->op->nova(h, NOVARG)
-#define sql(SQLSTR)  h->op->sql(h, SQLSTR)
+#define nova(NOVARG) h->op->add_va(h, NOVARG)
+#define sql(SQLSTR)  h->op->sql(h, SQLSTR, strlen(SQLSTR))
 
-#line 110 "fudge.tab.c" /* yacc.c:355  */
+#line 110 "fudge_bison.c" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -131,19 +131,35 @@ typedef void* yyscan_t;			/* FLEX SETUP */
     ERE = 273
   };
 #endif
+/* Tokens.  */
+#define END 258
+#define NAME_SEG 259
+#define AT 260
+#define FLEXIVAL 261
+#define DOT 262
+#define LBRACE 263
+#define RBRACE 264
+#define SLASH 265
+#define ASSIGN 266
+#define EQ 267
+#define NOTEQ 268
+#define LT 269
+#define GT 270
+#define LTE 271
+#define GTE 272
+#define ERE 273
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 23 "fudge.y" /* yacc.c:355  */
+#line 23 "fudge_bison.y" /* yacc.c:355  */
 
-    int  c;
-    char *str;
-    Ppak *ppak;
+    int    c;
+    char * str;
 
-#line 147 "fudge.tab.c" /* yacc.c:355  */
+#line 163 "fudge_bison.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -151,13 +167,13 @@ union YYSTYPE
 
 
 
-int yyparse (yyscan_t *scanner, Hsp *h);
+int yyparse (yyscan_t *scanner, Hframe *h);
 
-#endif /* !YY_YY_FUDGE_TAB_H_INCLUDED  */
+#endif /* !YY_YY_FUDGE_BISON_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 161 "fudge.tab.c" /* yacc.c:358  */
+#line 177 "fudge_bison.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -456,11 +472,11 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    44,    44,    49,    55,    61,    64,    68,    72,    76,
-      82,    83,    84,    85,    86,    87,    93,   105,   113,   122,
-     132,   135,   138,   143,   144,   147,   150,   153,   158,   166,
-     173,   183,   189,   195,   201,   207,   213,   219,   226,   227,
-     229,   230,   231,   232,   233
+       0,    43,    43,    48,    54,    60,    63,    67,    71,    75,
+      81,    82,    83,    84,    85,    86,    92,   104,   112,   121,
+     131,   134,   137,   142,   143,   146,   149,   152,   157,   165,
+     172,   182,   188,   194,   200,   206,   212,   218,   225,   226,
+     228,   229,   230,   231,   232
 };
 #endif
 
@@ -672,7 +688,7 @@ do {                                                                      \
 `----------------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, yyscan_t *scanner, Hsp *h)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, yyscan_t *scanner, Hframe *h)
 {
   FILE *yyo = yyoutput;
   YYUSE (yyo);
@@ -693,7 +709,7 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 `--------------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, yyscan_t *scanner, Hsp *h)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, yyscan_t *scanner, Hframe *h)
 {
   YYFPRINTF (yyoutput, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
@@ -731,7 +747,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t *scanner, Hsp *h)
+yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t *scanner, Hframe *h)
 {
   unsigned long int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -1011,7 +1027,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t *scanner, Hsp *h)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t *scanner, Hframe *h)
 {
   YYUSE (yyvaluep);
   YYUSE (scanner);
@@ -1024,33 +1040,45 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t *scanner,
   switch (yytype)
     {
           case 4: /* NAME_SEG  */
-#line 38 "fudge.y" /* yacc.c:1257  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
       { free (((*yyvaluep).str)); }
-#line 1030 "fudge.tab.c" /* yacc.c:1257  */
+#line 1046 "fudge_bison.c" /* yacc.c:1257  */
         break;
 
     case 5: /* AT  */
-#line 38 "fudge.y" /* yacc.c:1257  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
       { free (((*yyvaluep).str)); }
-#line 1036 "fudge.tab.c" /* yacc.c:1257  */
+#line 1052 "fudge_bison.c" /* yacc.c:1257  */
         break;
 
     case 6: /* FLEXIVAL  */
-#line 38 "fudge.y" /* yacc.c:1257  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
       { free (((*yyvaluep).str)); }
-#line 1042 "fudge.tab.c" /* yacc.c:1257  */
+#line 1058 "fudge_bison.c" /* yacc.c:1257  */
         break;
 
     case 7: /* DOT  */
-#line 38 "fudge.y" /* yacc.c:1257  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
       { free (((*yyvaluep).str)); }
-#line 1048 "fudge.tab.c" /* yacc.c:1257  */
+#line 1064 "fudge_bison.c" /* yacc.c:1257  */
+        break;
+
+    case 24: /* child_ident  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
+      { free (((*yyvaluep).str)); }
+#line 1070 "fudge_bison.c" /* yacc.c:1257  */
         break;
 
     case 27: /* name_or_at  */
-#line 38 "fudge.y" /* yacc.c:1257  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
       { free (((*yyvaluep).str)); }
-#line 1054 "fudge.tab.c" /* yacc.c:1257  */
+#line 1076 "fudge_bison.c" /* yacc.c:1257  */
+        break;
+
+    case 30: /* value  */
+#line 37 "fudge_bison.y" /* yacc.c:1257  */
+      { free (((*yyvaluep).str)); }
+#line 1082 "fudge_bison.c" /* yacc.c:1257  */
         break;
 
 
@@ -1068,7 +1096,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t *scanner,
 `----------*/
 
 int
-yyparse (yyscan_t *scanner, Hsp *h)
+yyparse (yyscan_t *scanner, Hframe *h)
 {
 /* The lookahead symbol.  */
 int yychar;
@@ -1316,73 +1344,73 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 45 "fudge.y" /* yacc.c:1646  */
+#line 44 "fudge_bison.y" /* yacc.c:1646  */
     {
 			    //printf("good.\n");
 			    return;
 			}
-#line 1325 "fudge.tab.c" /* yacc.c:1646  */
+#line 1353 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 50 "fudge.y" /* yacc.c:1646  */
+#line 49 "fudge_bison.y" /* yacc.c:1646  */
     { 
 			    //printf("good.\n");
 			    return;
 			}
-#line 1334 "fudge.tab.c" /* yacc.c:1646  */
+#line 1362 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 56 "fudge.y" /* yacc.c:1646  */
+#line 55 "fudge_bison.y" /* yacc.c:1646  */
     {
 			    //printf("set_target( union( \"selection_prop\" ));\n");
 			}
-#line 1342 "fudge.tab.c" /* yacc.c:1646  */
+#line 1370 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 65 "fudge.y" /* yacc.c:1646  */
+#line 64 "fudge_bison.y" /* yacc.c:1646  */
     { 
 			    // printf("return_targ()\n");
 			}
-#line 1350 "fudge.tab.c" /* yacc.c:1646  */
+#line 1378 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 69 "fudge.y" /* yacc.c:1646  */
+#line 68 "fudge_bison.y" /* yacc.c:1646  */
     {
 			    //printf("do_op()\n");
 			}
-#line 1358 "fudge.tab.c" /* yacc.c:1646  */
+#line 1386 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 73 "fudge.y" /* yacc.c:1646  */
+#line 72 "fudge_bison.y" /* yacc.c:1646  */
     {
 			    //printf("do_op(targ1,source)\n");
 			}
-#line 1366 "fudge.tab.c" /* yacc.c:1646  */
+#line 1394 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 77 "fudge.y" /* yacc.c:1646  */
+#line 76 "fudge_bison.y" /* yacc.c:1646  */
     {
 			    //printf("return_targ()\n");
 			}
-#line 1374 "fudge.tab.c" /* yacc.c:1646  */
+#line 1402 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 88 "fudge.y" /* yacc.c:1646  */
+#line 87 "fudge_bison.y" /* yacc.c:1646  */
     {
 			    //printf("setmap(targ.PROP)\n");
 			}
-#line 1382 "fudge.tab.c" /* yacc.c:1646  */
+#line 1410 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 94 "fudge.y" /* yacc.c:1646  */
+#line 93 "fudge_bison.y" /* yacc.c:1646  */
     {
 	
         //printf("setmap(->CHILD)\n");
@@ -1394,22 +1422,22 @@ yyreduce:
 	//printf("set_targ(map,%s)\n",$1);
 	//h->op->set_rqtarg(h,$1);
       }
-#line 1398 "fudge.tab.c" /* yacc.c:1646  */
+#line 1426 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 106 "fudge.y" /* yacc.c:1646  */
+#line 105 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("setmap(CHILD)\n");
 	//h->op->set_rqmap(h,RQCHILD);
 	//printf("set_targ()\n");
 	//h->op->set_rqtarg(h,".");
       }
-#line 1409 "fudge.tab.c" /* yacc.c:1646  */
+#line 1437 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 114 "fudge.y" /* yacc.c:1646  */
+#line 113 "fudge_bison.y" /* yacc.c:1646  */
     {
 		 nova((yyvsp[0].str));
 	sql("SELECT \"%s\" FROM \"selection_prop\";");
@@ -1418,11 +1446,11 @@ yyreduce:
 		    //h->op->set_rqmap(h,RQPROP);
 		    //h->op->set_rqtarg(h,$2);
 		  }
-#line 1422 "fudge.tab.c" /* yacc.c:1646  */
+#line 1450 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 123 "fudge.y" /* yacc.c:1646  */
+#line 122 "fudge_bison.y" /* yacc.c:1646  */
     { 
 
 	         nova((yyvsp[0].str));                                nova((yyvsp[0].str));        nova((yyvsp[0].str));
@@ -1432,61 +1460,61 @@ yyreduce:
 		    //printf("find_targ(map,%s)\n",$3);
 		    //h->op->set_rqtarg(h,$3);
 		  }
-#line 1436 "fudge.tab.c" /* yacc.c:1646  */
+#line 1464 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 133 "fudge.y" /* yacc.c:1646  */
+#line 132 "fudge_bison.y" /* yacc.c:1646  */
     {
 		  }
-#line 1443 "fudge.tab.c" /* yacc.c:1646  */
+#line 1471 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 136 "fudge.y" /* yacc.c:1646  */
+#line 135 "fudge_bison.y" /* yacc.c:1646  */
     {
 		  }
-#line 1450 "fudge.tab.c" /* yacc.c:1646  */
+#line 1478 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 139 "fudge.y" /* yacc.c:1646  */
+#line 138 "fudge_bison.y" /* yacc.c:1646  */
     {
 		  }
-#line 1457 "fudge.tab.c" /* yacc.c:1646  */
+#line 1485 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 154 "fudge.y" /* yacc.c:1646  */
+#line 153 "fudge_bison.y" /* yacc.c:1646  */
     {
 		    //h->op->set_rqsrc(h,$1);
-		    printf("set_src(%s)\n",(yyvsp[0].ppak));
+		    printf("set_src(%s)\n",(yyvsp[0].str));
 		}
-#line 1466 "fudge.tab.c" /* yacc.c:1646  */
+#line 1494 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 159 "fudge.y" /* yacc.c:1646  */
+#line 158 "fudge_bison.y" /* yacc.c:1646  */
     {
-		    Ppak *fvp = new_ppak_from_str((yyvsp[0].str),NULL);
+		    //Ppak *fvp = new_ppak_from_str($1,NULL);
 		   
 		    //h->op->set_rqsrc(h,fvp);
 		    printf("set_src(%s)\n",(yyvsp[0].str));
 		}
-#line 1477 "fudge.tab.c" /* yacc.c:1646  */
+#line 1505 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 167 "fudge.y" /* yacc.c:1646  */
+#line 166 "fudge_bison.y" /* yacc.c:1646  */
     {
 		    //h->op->set_rqsrc(h,NULL);
 		    //printf("set_src(%s)\n",NULL);
 		}
-#line 1486 "fudge.tab.c" /* yacc.c:1646  */
+#line 1514 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 174 "fudge.y" /* yacc.c:1646  */
+#line 173 "fudge_bison.y" /* yacc.c:1646  */
     {
 //	set_op(ASSIGN);
 	//printf("set_operator(ASSIGN):%d\n",NULL);
@@ -1495,81 +1523,81 @@ yyreduce:
 //	set_targ("working_dir");
 	//printf("set_targ(%s)\n",NULL);
     }
-#line 1499 "fudge.tab.c" /* yacc.c:1646  */
+#line 1527 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 184 "fudge.y" /* yacc.c:1646  */
+#line 183 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(EQ)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1509 "fudge.tab.c" /* yacc.c:1646  */
+#line 1537 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 190 "fudge.y" /* yacc.c:1646  */
+#line 189 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(NOTEQ)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1519 "fudge.tab.c" /* yacc.c:1646  */
+#line 1547 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 196 "fudge.y" /* yacc.c:1646  */
+#line 195 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(LT)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1529 "fudge.tab.c" /* yacc.c:1646  */
+#line 1557 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 202 "fudge.y" /* yacc.c:1646  */
+#line 201 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(GT)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1539 "fudge.tab.c" /* yacc.c:1646  */
+#line 1567 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 208 "fudge.y" /* yacc.c:1646  */
+#line 207 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(LTE)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1549 "fudge.tab.c" /* yacc.c:1646  */
+#line 1577 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 214 "fudge.y" /* yacc.c:1646  */
+#line 213 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(GTE)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1559 "fudge.tab.c" /* yacc.c:1646  */
+#line 1587 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 220 "fudge.y" /* yacc.c:1646  */
+#line 219 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(ERE)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1569 "fudge.tab.c" /* yacc.c:1646  */
+#line 1597 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
 
-#line 1573 "fudge.tab.c" /* yacc.c:1646  */
+#line 1601 "fudge_bison.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1797,7 +1825,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 237 "fudge.y" /* yacc.c:1906  */
+#line 236 "fudge_bison.y" /* yacc.c:1906  */
 
 
 

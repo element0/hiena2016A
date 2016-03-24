@@ -12,7 +12,7 @@
 #include <gob.h>
 #include <hiena/server_module.h>
 
-#include <libgen.h>
+#include <libgen.h>		/* 'basename()' */
 #include "server_callbacks.c"
 #include "serverlib.h"
 
@@ -81,7 +81,7 @@ static int serverlibentry_init ( const char * filename, void * data ) {
     memset(e, 0, sizeof(*e));
     gob_set_cleanup( e, serverlibentry_cleanup );
     e->filepath = strdup(filename);
-    e->name = strdup(basename(filename));
+    e->name = strdup(basename((char *)filename));
     printf("e->filepath == %s\n", filename );
 
     /* Load module into entry */
@@ -90,6 +90,8 @@ static int serverlibentry_init ( const char * filename, void * data ) {
 	e->handle = module;
     }else{
 	printf("e->handle == NULL\n");
+	serverlibentry_cleanup( e );
+	return -1;
     }
 
     /* Create new serverops structure */
@@ -192,7 +194,7 @@ void serverlib_cleanup ( void * ptr ) {
 #if HAVE_LTDL_H
     if( serverlib->ltdl == 0 )
     {
-	lt_dlexit();
+	lt_dlclose( serverlib->ltdl );
     }
 #endif
 

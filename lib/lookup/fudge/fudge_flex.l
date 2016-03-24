@@ -1,11 +1,11 @@
 %{
-#include "fudge.tab.h"
+#include "fudge_bison.h"
 %}
 %option reentrant
 %option stack noyywrap
 %option bison-bridge
 /* %option bison-locations */
-%option extra-type="Hsp *"
+%option extra-type="Hframe *"
 
 %{
     /* FROM flex's "*.yy.c" skeleton re. YY_INPUT:
@@ -15,7 +15,7 @@
 
 #define YY_INPUT(buf,result,max_size)\
 	errno=0; \
-	while( (result = yyextra->op->dsread(buf, 1, max_size, yyextra))==0 && \
+	while( (result = yyextra->op->read(buf, 1, max_size, yyextra))==0 && \
 		yyextra->op->ferror(yyextra) ) \
 	{ \
 		if( errno != EINTR) \

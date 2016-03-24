@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../hiena.h"
+#include <hiena/lookup_module.h>
 
+/** udpate all these to use callbacks structure defined in 'hiena/lookup_module.h'
+ */
 #define rescol(VAR) hsp_sql_set_rescol(h, (void *)VAR)
 #define push(HTOK, VAR) rql_push_expr(h, HTOK, (void *)VAR)
 #define from(TARG) hsp_sql_set_selection(h, TARG)
-#define do_select() hsp_sql_select_core(h)
+#define do_select() hsp_sql_select_core(h)	
 
 typedef void *yyscan_t;		/* FLEX SETUP */
 }

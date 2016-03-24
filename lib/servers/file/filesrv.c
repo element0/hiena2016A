@@ -5,7 +5,6 @@ architecture: linux
 
    */
 #include "../../../include/hiena/server_module.h"	/* generic server header for all hiena server modules */
-// ON IT'S WAY OUT... #include "../../src/hdirent.h" /* hiena directory entries */
 #include <dirent.h>	/* DIR */
 #include <sys/stat.h>	/* stat() */
 #include <unistd.h>	/* stat() */

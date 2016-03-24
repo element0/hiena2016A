@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../src/hiena.h"		/* HIENA HEADER */
+#include "../../../include/hiena/lookup_module.h"		/* HIENA HEADER */
 
 typedef void* yyscan_t;			/* FLEX SETUP */
 
 /* callback args */
-#define nova(NOVARG) h->op->nova(h, NOVARG)
-#define sql(SQLSTR)  h->op->sql(h, SQLSTR)
+#define nova(NOVARG) h->op->add_va(h, NOVARG)
+#define sql(SQLSTR)  h->op->sql(h, SQLSTR, strlen(SQLSTR))
 }
 
 
@@ -17,13 +17,12 @@ typedef void* yyscan_t;			/* FLEX SETUP */
 /* %locations */
 /* %define api.value.type union */
 %param {yyscan_t *scanner}
-%parse-param {Hsp *h}
+%parse-param {Hframe *h}
 
 
 %union {
-    int  c;
-    char *str;
-    Ppak *ppak;
+    int    c;
+    char * str;
 }
 
 
@@ -33,7 +32,7 @@ typedef void* yyscan_t;			/* FLEX SETUP */
 %token ASSIGN
 %token EQ NOTEQ LT GT LTE GTE ERE
 %type  <str> name_or_at
-%type  <ppak> child_ident value
+%type  <str> child_ident value
 
 %destructor { free ($$); } <str>
 
@@ -157,7 +156,7 @@ value		: child_ident
 		}
 		|	FLEXIVAL
 		{
-		    Ppak *fvp = new_ppak_from_str($1,NULL);
+		    //Ppak *fvp = new_ppak_from_str($1,NULL);
 		   
 		    //h->op->set_rqsrc(h,fvp);
 		    printf("set_src(%s)\n",$1);
