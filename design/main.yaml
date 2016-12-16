@@ -1,6 +1,76 @@
 # hiena and cosmos main overview document
 ---
-project : hiena and cosmos ( with a little fudge )
+product : snafudrive
+codenam : hiena and cosmos ( and path fudge )
+features :
+    - fudge names and fudge paths
+configuration :
+    - host :
+        - source servers			# lib/snafu/sources
+	- starter scanner library		# lib/snafu/types
+	- type compiler				# bin/snafu/hnfc
+	- lookup language module		# lib/snafu/lookup
+	- fuse subsystem			# libfuse
+	- snafudrivefs ( fuse filesystem )	# snafudrive
+    - cascading_configuration_system :		# ~/[._]cosm
+	- devices
+	- flows
+        - tools
+	- types
+	- users
+languages :
+    - .fudge		# for names and paths
+    - hnf		# for scanners
+    - bison-flex	# for scanners
+    - shell, python,	# for tools
+    - perl, awk, etc.	# for tools
+core_internal_objects :
+    - lookup string	# can contain .fudge commands
+    - access path
+    - domain cell
+    - fragment cell
+    - map cell
+primatives :
+    - gob		# general object chains 
+    - cel		# superclass for dcel, fcel and mcel
+    - source addr		# source address object
+    - map alignment node
+io_handles :
+    - source addr stream handle
+    - access path session handle
+apis :
+    - hienafs fuse filesystem
+    - map walker
+    - gettok
+major_algorithms :
+    - per source sync records with state hash and sync-token
+    - map conforming using state hash, sync-token, order rules and journal
+    - map level state change journal
+    - parallel states
+    - whiteouts, removal records, cell level locks
+    - grammar rules for unordered or ordered contents
+    - grammar rules for parallel state
+    - flow rule tables and unbalanced, weighted storage
+    - flow rules affect which devices actual store the sources
+organizers :
+    - lookup string db
+    - access path db		# analogous to inode index
+    - domain cell db
+    - source db
+    - scanner db
+    - scanner rule GUID table
+    - cosm_node:
+        - "devices" source cascade node
+	- "flows" flow cascade node
+	- "tools" tool cascade node
+	- "types" scanner cascade node
+	- "users" user cascade node
+modules :
+    - lookup module
+    - source module
+    - scanner module
+    - lookup compiler
+    - scanner compiler
 core_files_list :
     - /bin/
     - /bin/cosmosfs
@@ -44,7 +114,7 @@ user_provided_files :
     - ~/.cosm/
     - ~/.cosm/types/
     - ~/.cosm/types/*.hna
-    - ~/.cosm/types/*.fdg
+    - ~/.cosm/types/*.fudge
 target_platforms :
     - linux fuse
     - osxfuse

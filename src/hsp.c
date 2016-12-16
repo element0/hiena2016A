@@ -3,7 +3,7 @@
 #include <stdarg.h>
 /* #include "rql.h" */		/* RETIRING */
 #include "hsp.h"
-#include "axpa.h"
+#include "accesspath.h"
 
 //#include "rql.c"
 
@@ -63,8 +63,8 @@ static Hpat *validate_rqfunc_args (Hsp *h, const char *s)
 /*== SQL INTERNAL IMPLEMENTATION FUNCTIONS: ==*/
 /* previously located in "atab.c" */
 
-#include "rql-bison/rql.h"
-#include "rql-bison/rql.tab.h"
+#include "sqlinterp/rql.h"
+#include "sqlinterp/rql.tab.h"
 
 
 int hsp_set_sql_selection ( Hsp *h, int tabid ) { /* 1 | ERROR */

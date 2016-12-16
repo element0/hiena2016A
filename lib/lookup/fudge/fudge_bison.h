@@ -45,7 +45,7 @@ extern int yydebug;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/lookup_module.h"		/* HIENA HEADER */
+#include "../../../include/hiena/lookup_module.h"		/* HIENA HEADER */
 
 typedef void* yyscan_t;			/* FLEX SETUP */
 

@@ -1,7 +1,8 @@
 DOMAIN MAP
 ----------
 
-a domain stream is generated from a domain address
+a domain stream is generated from a domain address,
+served by a domain server.  
 
 the domain stream is analyzed by the domain filter
 to produce the base fragment map
@@ -42,10 +43,11 @@ like the fragments, the grammar mappings are hierarchical and
 sequential.
 
 each a-map entry contains:
-a GUID for its grammar rule,
-a link to the appropriate fragment or fragment cell,
-a link to its first constituent rule map entry,
-a link to its next consecutive map entry.
+    a GUID for its grammar rule,
+    a link to the appropriate fragment or fragment cell,
+    a link to its first constituent rule map entry,
+    a link to its next consecutive map entry.
+    a link to the next map positional node
 
 
 An index of scanner rule GUIDs is searchable from the scannerlib.
@@ -53,10 +55,31 @@ When the hiena lookup function processes the request string
 it sends any grammar name requests to the index to acquire the GUID.
 
 
+VALUE MAPPING VS. DERIVATIVE VALUE
+----------------------------------
+
+A regular mapping selects an area of the source domain.
+The selection is an address reference to the source.
+However, I grammar rule could intepret the source
+and produce a derivative value.
+
+source domain: "three plus one"
+
+map:  | number| sum_op | number |   // terminal grammar rule names
+val:  | three |  plus  |  one   |   // referenced values
+val:  |   3   |   +    |   1    |   // derivative values
+map:  |        addition         |   // non-terminal grammar rule name
+val:  |     three plus one      |   // referenced value
+val:  |           4             |   // derivative value
+
+
+
+OBJECT INDEX
+------------
+
 A map-local index of arrays, searchable by GUID produces an array for each GUID.
 Each array is a sequence of matches for a particular rule.
 You can step through or select a range of rule mappings via this mechanism.
-
 
 for instance, lets define a scanner for a list object:
 
@@ -91,8 +114,8 @@ pathlist := "list of filepaths:\n"
             (  {:: filepath ::} '\n' )*	/* declares zero or more child mappings */
 	    ";\n"
 {
-    $filepath.addr = $filepath.valu;
-    $filepath.serv = "file";
+    $filepath:$addr = $filepath
+    $filepath:$serv = "file";
     mapping_set_prop($filepath, "name", 
 	    mapping_get_prop($filepath, "filename[-0]") 	/* select 0'th from last filename */
 	    );

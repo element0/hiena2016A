@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([hiena_fudge], [0.01], [errno@raygan.com])
+AC_INIT([hiena_fudge], [0.01], [errno@dreamboysoft.com])
 AM_PROG_AR
 LT_INIT([dlopen])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -10,16 +10,17 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([fudge_bison.y])
 AC_CONFIG_HEADERS([config.h])
 
+AC_SUBST([project_name], [hiena])
+
 # Checks for programs.
 AC_PROG_YACC
 AC_PROG_CC
-#AC_PROG_LEX
-AM_PROG_LEX
+AM_PROG_LEX     # replaces AC_PROG_LEX
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 
 # Checks for libraries.
-AC_CHECK_LIB([dl], [dlopen])
+#AC_CHECK_LIB([dl], [dlopen])
 
 # Checks for header files.
 AC_FUNC_ALLOCA

@@ -7,7 +7,7 @@
 typedef void* yyscan_t;			/* FLEX SETUP */
 
 /* callback args */
-#define nova(NOVARG) h->op->add_va(h, NOVARG)
+#define pusharg(SQLARG) h->op->add_va(h, SQLARG)
 #define sql(SQLSTR)  h->op->sql(h, SQLSTR, strlen(SQLSTR))
 }
 
@@ -94,7 +94,7 @@ id_base		: name_or_at
 	
         //printf("setmap(->CHILD)\n");
 	//printf("SELECT * FROM \"selection_children\" WHERE \"name\" IS \"%s\";\n",$1);
-	nova($1);
+	pusharg($1);
 	sql("SELECT * FROM \"selection_children\" WHERE \"name\" IS \'%s\';");
 
 	//h->op->set_rqmap(h,RQCHILD);
@@ -111,7 +111,7 @@ id_base		: name_or_at
 		;
 derivatives	: DOT name_or_at
 		  {
-		 nova($2);
+		 pusharg($2);
 	sql("SELECT \"%s\" FROM \"selection_prop\";");
 
 		    //printf("find_targ(map,%s)\n",$2);
@@ -121,7 +121,7 @@ derivatives	: DOT name_or_at
 		| derivatives DOT name_or_at 
 		  { 
 
-	         nova($3);                                nova($3);        nova($3);
+	         pusharg($3);                      pusharg($3);  pusharg($3);
 	sql("SELECT \"%s\" FROM \"selection_prop\" WHERE \"%s\" IS NOT \'%s\';");
 
 		    //h->op->set_rqmap(h,RQPROP);
@@ -140,6 +140,9 @@ derivatives	: DOT name_or_at
 		;
 
 name_or_at	: NAME_SEG
+		{
+		    printf("name segment\n");
+		}
 		| AT
 		;
 
@@ -240,5 +243,5 @@ dir_property_seg: LBRACE name_or_at RBRACE
 
 /* leave return type blank - bison caveat */
 yyerror(char const *s) {
-    fprintf(stderr, "fudge.ss err: %s\n", s);
+    fprintf(stderr, "fudge err: %s\n", s);
 }

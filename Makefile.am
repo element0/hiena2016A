@@ -2,7 +2,7 @@ bin_PROGRAMS = hienafs
 
 hienafs_SOURCES = src/hienafs.c include/gob.c
 hienafs_CPPFLAGS = $(FUSE_CFLAGS) -Iinclude
-hienafs_LDFLAGS = $(FUSE_LIBS)
+hienafs_LDFLAGS = $(FUSE_LIBS) -ldl
 
 SUBDIRS = lib src
 

@@ -1,0 +1,19 @@
+3-30-2016
+accesspath: rename member "branches" to "lookup_cache"
+accesspath: rename member "domainstream" to "domain"
+accesspath: removed accessor methods for individual 'st_...' members
+accesspath: added accessor methods for 'stbuf'
+hienafs: change file system operations namespace from "hiena_..." to "hienafs_..."
+hienafs: add 'opendir' and 'releasedir' calls
+3-31-2016
+scanlib: scanlib_rm_scanner: changed return values  0==fail, 1==success
+hienafs: opendir, readdir work	
+accesspathdb: created proto accesspath to provide inheritance to root accesspath
+hienafs_object: loaded scanlib and added to proto accesspath
+4-14-2016
+lib: rename lib/servers lib/sources
+include: rename include/hiena/server_module.h include/hiena/source_module.h
+source_module.h: rename 'hiena_server'... 'hiena_source'...
+lib/sources/*/Makefile.am: change libdir 'servers' to 'sources'
+hienafs.c,hienafs_object.c: rename 'hiena_server' 'hiena_source'
+src: rename 'server'{lib.[ch],_callbacks.[ch]} 'source'...

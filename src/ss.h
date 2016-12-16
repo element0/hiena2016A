@@ -3,6 +3,7 @@
 #define _HIENA_SCANNER_H_
 
 #include <stdio.h>
+#include "list_t.h"
 
 typedef struct  hiena_parse_packet  Ppak;
 typedef struct  hiena_scannerlib    scanlib;
@@ -11,6 +12,7 @@ typedef struct  hiena_scannerserver_ops Hscannerops_t;
 
 typedef void   *yyscan_t;
 typedef struct  hiena_scanner_payload Hsp;
+typedef int    			      Htok_t;
 
 scannerserver  *hiena_scanner_create ();			/* TODO: rename new_scanner() */
 void            hiena_scanner_cleanup( scannerserver * );

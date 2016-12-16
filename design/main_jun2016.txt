@@ -1,0 +1,94 @@
+
+
+TOC:
+	INIT
+	FUSEOPS
+	FUDGE
+
+
+
+INIT:
+
+    init protocosm
+    init local access servers
+
+    init mountpoint
+
+    init root domain
+    init root access frame
+    init root cosm
+
+    init grid
+    sync root access frame
+
+    init local access frame db
+
+    init fuse module
+
+
+
+init protocosm
+	cosm load conf {localinst}/etc/snafu/protocosm.conf
+	cosm load scan {localinst}/lib/snafu/scanners/
+
+init local access servers
+	cosm load serv {localinst}/lib/snafu/servers/
+
+init mountpoint
+	mountpoint source from command line
+	moutnpoint dest   from command line
+
+init root domain
+	dcel set source ( mountpoint source )
+
+init root access frame
+	axfr set domain ( root domain )
+
+init root cosm
+	fudge lookup ( root access frame, "_cosm" )
+	dcel cascade ( protocosm, root cosm )
+	root axfr set cosm ( root cosm )
+
+init grid
+	fudge lookup ( root access frame, "_cosm/etc/grid/neigh" )
+	grid set neighbors
+
+sync root access frame
+	grid sync root access frame
+
+init local access frame db
+	database access frames set ( 1, root access frame )
+
+init fuse module
+	fuse set mountpoint ( mountpoint dest )
+
+
+
+FUSEOPS:
+	lookup
+	stat
+	opendir
+	closedir
+	open
+	read
+	close
+
+
+FUDGE:
+	example
+	interpreter
+	compiler
+
+
+example
+	#!/bin/fudge
+	sel --> fn --> res
+
+interpreter
+	{bininst}/fudge
+
+compiler
+	{bininst}/fudgec
+
+
+

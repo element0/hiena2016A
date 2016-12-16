@@ -466,21 +466,13 @@ static yyconst flex_int16_t yy_chk[67] =
      * Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
      * is returned in "result". */
 
+
 #define YY_INPUT(buf,result,max_size)\
-	errno=0; \
-	while( (result = yyextra->op->read(buf, 1, max_size, yyextra))==0 && \
-		yyextra->op->ferror(yyextra) ) \
-	{ \
-		if( errno != EINTR) \
-		{ \
-			YY_FATAL_ERROR( "input in flex scanner failed" ); \
-			break; \
-		} \
-		errno=0; \
-		yyextra->op->clearerr(yyextra); \
+        { \
+	    result = yyextra->op->read(buf, 1, max_size, yyextra); \
 	} \
 
-#line 484 "fudge_flex.c"
+#line 476 "fudge_flex.c"
 
 #define INITIAL 0
 
@@ -755,10 +747,10 @@ YY_DECL
 		}
 
 	{
-#line 32 "fudge_flex.l"
+#line 24 "fudge_flex.l"
 
 
-#line 762 "fudge_flex.c"
+#line 754 "fudge_flex.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -816,23 +808,23 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case YY_STATE_EOF(INITIAL):
-#line 34 "fudge_flex.l"
+#line 26 "fudge_flex.l"
 return END;
 	YY_BREAK
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 35 "fudge_flex.l"
+#line 27 "fudge_flex.l"
 return END;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 36 "fudge_flex.l"
+#line 28 "fudge_flex.l"
 return SLASH;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 38 "fudge_flex.l"
+#line 30 "fudge_flex.l"
 { 	
     			yylval->str = yytext;
     			return AT;
@@ -840,12 +832,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 43 "fudge_flex.l"
+#line 35 "fudge_flex.l"
 return DOT;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "fudge_flex.l"
+#line 37 "fudge_flex.l"
 {
     			yylval->str = yytext;
 			return NAME_SEG;
@@ -853,7 +845,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 49 "fudge_flex.l"
+#line 41 "fudge_flex.l"
 {
     			yylval->str = yytext;
 			return FLEXIVAL;
@@ -861,65 +853,65 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 53 "fudge_flex.l"
+#line 45 "fudge_flex.l"
 return LBRACE;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 54 "fudge_flex.l"
+#line 46 "fudge_flex.l"
 return RBRACE;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 57 "fudge_flex.l"
+#line 49 "fudge_flex.l"
 return ASSIGN;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 59 "fudge_flex.l"
+#line 51 "fudge_flex.l"
 return EQ;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 60 "fudge_flex.l"
+#line 52 "fudge_flex.l"
 return EQ;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 61 "fudge_flex.l"
+#line 53 "fudge_flex.l"
 return NOTEQ;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 62 "fudge_flex.l"
+#line 54 "fudge_flex.l"
 return LT;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 63 "fudge_flex.l"
+#line 55 "fudge_flex.l"
 return GT;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 64 "fudge_flex.l"
+#line 56 "fudge_flex.l"
 return LTE;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 65 "fudge_flex.l"
+#line 57 "fudge_flex.l"
 return GTE;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 66 "fudge_flex.l"
+#line 58 "fudge_flex.l"
 return ERE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 67 "fudge_flex.l"
+#line 59 "fudge_flex.l"
 ECHO;
 	YY_BREAK
-#line 923 "fudge_flex.c"
+#line 915 "fudge_flex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2122,4 +2114,4 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 66 "fudge_flex.l"
+#line 58 "fudge_flex.l"

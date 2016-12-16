@@ -1,0 +1,124 @@
+== Use Case:  Snafu on OSX ==
+--------
+
+
+== a user narrative ==
+
+Sit at your desk.  Open up the App Store.
+
+Search for "Snafu Drive"
+
+Purchase for $1.99
+
+It downloads and installs.
+
+Notice the Snafu icon in every finder window.
+
+Open a directory window on your project that you've got spread accross multiple workstations
+and disks.
+
+
+-- Grid --
+
+Go to the Snafu icon.  Click.  Snafu->Devices->'+'
+
+A blank device appears in the menu.  Name it "ssh://<user>@<workstation_name>/<path_to_project>"
+
+(It may ask you for your password to connect.)
+
+The project directory starts populating with directories and files from the other device.
+
+
+-- Versions --
+
+One of your files is now the wrong version.  Right click on the file: popup->Snafu->Versions
+
+A folder window showing different versions of the file appears.
+
+The primary version is called <filename>
+whereas the other versions have <filename>.<version>
+
+You can select your favorite version by deleting the version extension.
+A new extension will be added to the old primary automatically.
+Close the window.
+
+Now the file is the correct version.  If you go over to <workstation_name>
+you will notice the file has been updated to your selected version.
+And that the older <filename>.<version> exists beside it.
+
+
+
+-- Hiena and Fudge --
+
+In a text editor create a new file in the project directory: "test.txt"
+
+Enter the following text.
+
+colors
+	red
+	green
+	blue
+numbers
+	1
+	2
+	3
+
+Save.
+
+Now in the project directory rename the file "test.dir"
+
+It changes to a dir.  Open it.
+
+You see two folders: "colors" and "numbers"
+
+Open them.
+	Three files each.  red green blue
+	and 1 2 3
+
+Rename "colors" "colors.txt"
+
+Open it.  You see
+
+red
+green
+blue
+
+
+Add
+
+magenta
+
+Save
+
+Go back to the project directory and rename the directory "test.txt"
+
+Open it.
+
+Now you see:
+
+colors
+	red
+	green
+	blue
+	magenta
+numbers
+	1
+	2
+	3
+
+
+-- Flows --
+
+Go to the finder window.  Right click on "test.txt":  menu->snafu->flows...
+
+The flows menu shows a list of devices with schematic arrows.  Click on the arrows to change them.
+You can determine "flow direction" or no flow at all.
+
+Edit the flow arrow and add a time constraint of 1 minute.  And a flow destination of the other workstation.
+
+After the file becomes a minute old, Snafu will migrate its physical storage to the other workstation.
+
+You can also use Flows to restrict certain folders to remain on certain devices.
+
+
+--------

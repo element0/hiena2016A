@@ -1,0 +1,29 @@
+\hypertarget{gob_8c}{\section{gob.\+c File Reference}
+\label{gob_8c}\index{gob.\+c@{gob.\+c}}
+}
+{\ttfamily \#include \char`\"{}gob.\+h\char`\"{}}\\*
+Include dependency graph for gob.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=121pt]{gob_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{gob_8c_a45e541c36ac41c90392d01fb39640f5e}{cleanup\+\_\+garbage} (void $\ast$target)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{gob_8c_a45e541c36ac41c90392d01fb39640f5e}{\index{gob.\+c@{gob.\+c}!cleanup\+\_\+garbage@{cleanup\+\_\+garbage}}
+\index{cleanup\+\_\+garbage@{cleanup\+\_\+garbage}!gob.\+c@{gob.\+c}}
+\subsubsection[{cleanup\+\_\+garbage}]{\setlength{\rightskip}{0pt plus 5cm}void cleanup\+\_\+garbage (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{target}
+\end{DoxyParamCaption}
+)}}\label{gob_8c_a45e541c36ac41c90392d01fb39640f5e}
+Simply steps through the garbage chain, calling the cleanup function for each node, terminating when N\+U\+L\+L.
+
+The cleanup function could quite simply be set to free(). But it should be set to something otherwise it will do nothing and skip the object, leaking it into memory. In that case it really is your fault for not setting a cleanup function. 

@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <sys/types.h>	/* off_t */
+#include "bounds_t.h"
 
 typedef struct hiena_scanner_payload Hsp;
 typedef struct hiena_scanner_payload_callback_ops Hspops;
@@ -15,7 +16,7 @@ typedef struct hiena_access_path     Axpa;
 typedef struct hiena_scannerlib      scanlib;
 typedef void                        *yyscan_t;
 
-void    hsp_init_globals     ();
+Hspops *hsp_init_globals     ();
 void    hsp_globals_cleanup  ();
 
 void    hsp_clear_nova       ( Hsp * );
@@ -161,8 +162,7 @@ typedef struct hiena_scanner_payload_callback_ops
 
  */
 
-typedef struct non_variadic_argument
-{
+typedef struct non_variadic_argument {
     char   *type;
     void   *var;
     nova_t *next;
@@ -199,7 +199,8 @@ typedef struct hiena_scanner_payload
     /* file pointer */
     FILE *fp;		/*:= !NULL */
     /* REPLACE ABOVE WITH... */
-    dpakstream *ds;
+    void * ds;
+    //dpakstream *ds;
     /* this requires rewriting bison generated scanners
        YY_INPUT to read from a dpakstream */
     

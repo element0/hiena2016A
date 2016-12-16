@@ -1,0 +1,8 @@
+fusenotes
+
+fuse_low_level.h
+
+'lookup' is performed independently of 'opendir' --> 'readdir' --> 'releasedir' cycle.
+
+stat.st_nlink can be '1' in the case of linux, the number of links to the directory ie. the inode references from within other directories ( the original dirent + any '..' files in subdirectories ),
+    or in the case of OSX st_nlink can be the actual number of dirents inside the directory.

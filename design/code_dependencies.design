@@ -1,0 +1,86 @@
+
+dependencies:
+
+lookup_callbacks --> sql --> map api
+hiena_core --> server_module, scanner_module
+server_callbacks --> mapping api
+scanner_callbacks --> mapping api
+
+
+domain handle {
+    addr;
+    server;
+    filter;
+    fragbuf; 		// := fragmap;
+    object index;	// := index object;	// btree of arrays of like grammar objects
+    childtab;
+}
+
+buffer {
+    retain;
+    ptr;
+    len;
+    server;
+}
+
+fragmap {
+    map;
+    fragment;
+}
+
+fragment {
+    gob;
+    orig addr;
+    orig server;
+    offset;
+    len;
+    buffer;
+}
+
+index object {		// tree of grammar object arrays
+    gobtree;
+    object;
+}
+
+object {
+    gob;
+    grammarid;	
+    fragment;
+    offset;
+    len;
+    map object;		// object map of object
+}
+
+map node {
+    gob;
+    map object;
+}
+
+map object {
+    gob;
+    object;
+    map object; //first child
+}
+
+child object {
+    gobtree;
+    map object;		// child properties
+    d_name;		// directory entry name
+    domain handle;	// child hiearchy
+}
+
+---
+
+gob {
+    prev;
+    next;
+    prevgarb;
+    nextgarb;
+    retain;
+}
+
+gobtree {
+    gob;
+    key[5];
+    link[4];
+}

@@ -98,7 +98,7 @@ extern int yydebug;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/lookup_module.h"		/* HIENA HEADER */
+#include "../../../include/hiena/lookup_module.h"		/* HIENA HEADER */
 
 typedef void* yyscan_t;			/* FLEX SETUP */
 
@@ -474,9 +474,9 @@ static const yytype_uint8 yyrline[] =
 {
        0,    43,    43,    48,    54,    60,    63,    67,    71,    75,
       81,    82,    83,    84,    85,    86,    92,   104,   112,   121,
-     131,   134,   137,   142,   143,   146,   149,   152,   157,   165,
-     172,   182,   188,   194,   200,   206,   212,   218,   225,   226,
-     228,   229,   230,   231,   232
+     131,   134,   137,   142,   146,   149,   152,   155,   160,   168,
+     175,   185,   191,   197,   203,   209,   215,   221,   228,   229,
+     231,   232,   233,   234,   235
 };
 #endif
 
@@ -1484,37 +1484,45 @@ yyreduce:
 #line 1485 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
+  case 23:
+#line 143 "fudge_bison.y" /* yacc.c:1646  */
+    {
+		    printf("name segment\n");
+		}
+#line 1493 "fudge_bison.c" /* yacc.c:1646  */
+    break;
+
   case 27:
-#line 153 "fudge_bison.y" /* yacc.c:1646  */
+#line 156 "fudge_bison.y" /* yacc.c:1646  */
     {
 		    //h->op->set_rqsrc(h,$1);
 		    printf("set_src(%s)\n",(yyvsp[0].str));
 		}
-#line 1494 "fudge_bison.c" /* yacc.c:1646  */
+#line 1502 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 158 "fudge_bison.y" /* yacc.c:1646  */
+#line 161 "fudge_bison.y" /* yacc.c:1646  */
     {
 		    //Ppak *fvp = new_ppak_from_str($1,NULL);
 		   
 		    //h->op->set_rqsrc(h,fvp);
 		    printf("set_src(%s)\n",(yyvsp[0].str));
 		}
-#line 1505 "fudge_bison.c" /* yacc.c:1646  */
+#line 1513 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 166 "fudge_bison.y" /* yacc.c:1646  */
+#line 169 "fudge_bison.y" /* yacc.c:1646  */
     {
 		    //h->op->set_rqsrc(h,NULL);
 		    //printf("set_src(%s)\n",NULL);
 		}
-#line 1514 "fudge_bison.c" /* yacc.c:1646  */
+#line 1522 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 173 "fudge_bison.y" /* yacc.c:1646  */
+#line 176 "fudge_bison.y" /* yacc.c:1646  */
     {
 //	set_op(ASSIGN);
 	//printf("set_operator(ASSIGN):%d\n",NULL);
@@ -1523,81 +1531,81 @@ yyreduce:
 //	set_targ("working_dir");
 	//printf("set_targ(%s)\n",NULL);
     }
-#line 1527 "fudge_bison.c" /* yacc.c:1646  */
+#line 1535 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 183 "fudge_bison.y" /* yacc.c:1646  */
+#line 186 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(EQ)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1537 "fudge_bison.c" /* yacc.c:1646  */
+#line 1545 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 189 "fudge_bison.y" /* yacc.c:1646  */
+#line 192 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(NOTEQ)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1547 "fudge_bison.c" /* yacc.c:1646  */
+#line 1555 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 195 "fudge_bison.y" /* yacc.c:1646  */
+#line 198 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(LT)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1557 "fudge_bison.c" /* yacc.c:1646  */
+#line 1565 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 201 "fudge_bison.y" /* yacc.c:1646  */
+#line 204 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(GT)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1567 "fudge_bison.c" /* yacc.c:1646  */
+#line 1575 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 207 "fudge_bison.y" /* yacc.c:1646  */
+#line 210 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(LTE)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1577 "fudge_bison.c" /* yacc.c:1646  */
+#line 1585 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 213 "fudge_bison.y" /* yacc.c:1646  */
+#line 216 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(GTE)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1587 "fudge_bison.c" /* yacc.c:1646  */
+#line 1595 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 219 "fudge_bison.y" /* yacc.c:1646  */
+#line 222 "fudge_bison.y" /* yacc.c:1646  */
     {
 	//printf("condition_op: set_operator(ERE)\n");
 	//printf("condition_op: save_targ(targ,targ1)\n");
 	//printf("condition_op: reset_targ(working_dir)\n");
     }
-#line 1597 "fudge_bison.c" /* yacc.c:1646  */
+#line 1605 "fudge_bison.c" /* yacc.c:1646  */
     break;
 
 
-#line 1601 "fudge_bison.c" /* yacc.c:1646  */
+#line 1609 "fudge_bison.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1825,7 +1833,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 236 "fudge_bison.y" /* yacc.c:1906  */
+#line 239 "fudge_bison.y" /* yacc.c:1906  */
 
 
 
@@ -1833,5 +1841,5 @@ yyreturn:
 
 /* leave return type blank - bison caveat */
 yyerror(char const *s) {
-    fprintf(stderr, "fudge.ss err: %s\n", s);
+    fprintf(stderr, "fudge err: %s\n", s);
 }

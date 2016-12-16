@@ -1,0 +1,15 @@
+
+#define YY_INPUT(buf,result,max_size)\
+	errno=0; \
+	while( (result = yyextra->op->read(buf, 1, max_size, yyextra))==0 && \
+		yyextra->op->ferror(yyextra) ) \
+	{ \
+	        printf( "YY_INPUT result == %d\n", result ); \
+		if( errno != EINTR) \
+		{ \
+			YY_FATAL_ERROR( "input in flex scanner failed" );
+			break; \
+		} \
+		errno=0; \
+		yyextra->op->clearerr(yyextra); \
+	} \

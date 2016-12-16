@@ -14,16 +14,21 @@ struct hiena_lookup_ops {
 
 typedef struct hiena_lookup_callbacks {
     /* callbacks for flex */
-    size_t (*read)( void * buf, size_t count, size_t size, Hframe * );
-    int (*ferror)( Hframe * );
-    void (*clearerr)( Hframe * );
+    size_t (*read)    ( void * buf, size_t count, size_t size, Hframe * );
+    int    (*ferror)  ( Hframe * );
+    void   (*clearerr)( Hframe * );
     /* callbacks for bison */
-    int (*add_va)( Hframe *, void * var );
-    int (*sql)( Hframe *, const char * sqlstr, size_t len );
+    int    (*add_va)  ( Hframe *, void * var );
+    int    (*sql)     ( Hframe *, const char * sqlstr, size_t len );
 }Hcb;
 
 struct hiena_lookup_frame {
     Hcb * op;
+    void * addr;
+    size_t addrlen;
+    void * server;
+    void * servcb;
+    void * obj;
 };
 
 

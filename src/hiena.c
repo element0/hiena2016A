@@ -356,7 +356,6 @@ int main (int argc, char *argv[]) {
     
 
 
-
     /***********************************
      *        perform request          *
      ***********************************/
@@ -367,6 +366,7 @@ int main (int argc, char *argv[]) {
 	fprintf(stderr, "main: hsp_execute() failed, returned NULL,\n");
 	goto cleanup_and_abort_hsp;
     }
+
 
 
     /*************************************

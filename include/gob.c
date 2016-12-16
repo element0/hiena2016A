@@ -16,6 +16,7 @@
 void gob_cleanup( void * target ) {
     if( target == NULL ) return;
 
+
     gob * cur  = target;
     gob * next;
 
@@ -28,6 +29,9 @@ void gob_cleanup( void * target ) {
     } 
 }
 
+/** If the cleanup function might be called independently of gob_cleanup -- ie a single object cleaned up at an arbitrary time, you must call gob_rm_garbage() from its cleanup function.
+FIXME: I'm pretty sure this will bite me.  I deleted this call somewhere...
+ */
 int gob_rm_garbage ( void * dstp ) {
     if( dstp == NULL ) return 0;
 
@@ -44,7 +48,7 @@ int gob_rm_garbage ( void * dstp ) {
     return 1;
 }
 
-int gob_set_garbage ( void * dstp, void * srcp ) {
+int gob_set_garbage ( void * srcp, void * dstp ) {
     if( dstp == NULL ) return 0;
 
     gob * dst = dstp;
@@ -60,13 +64,28 @@ int gob_set_garbage ( void * dstp, void * srcp ) {
 
     return 1;
 }
-int gob_add_nextgarb ( void * dstp, void * srcp ) {	/* RETIRE THIS */
-    return gob_set_garbage( dstp, srcp );
-}
 
-void gob_set_cleanup( void * dstp, void * srcp ) {
-    if( dstp == NULL ) return;
+int gob_set_cleanup( void * dstp, void * cleanupfunc ) {
+    if( dstp == NULL || cleanupfunc == NULL ) return -1;
     gob * dst = dstp;
-    dst->cleanup = srcp;
+    dst->cleanup = cleanupfunc;
 }
 
+void * gob_get_next( void * objp ) {
+    if( objp == NULL ) return NULL;
+    gob * obj = objp;
+
+    return obj->next;
+}
+
+int gob_add_next( void * objp, void * nextp ) {
+    if( objp == NULL ) return -1;
+    gob * obj = objp;
+    gob * next = nextp;
+
+    next->next = obj->next;
+    next->prev = obj;
+    obj->next = next;
+
+    return 1;
+}

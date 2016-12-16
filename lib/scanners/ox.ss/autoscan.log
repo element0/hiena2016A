@@ -1,0 +1,22 @@
+autoscan: warning: missing AC_CHECK_HEADERS([libintl.h]) wanted by: 
+	ox.tab.c:217
+autoscan: warning: missing AC_CHECK_HEADERS([malloc.h]) wanted by: 
+	ox.tab.c:293
+autoscan: warning: missing AC_CHECK_HEADERS([stddef.h]) wanted by: 
+	ox.tab.c:205
+autoscan: warning: missing AC_FUNC_ALLOCA wanted by: 
+	ox.tab.c:289
+autoscan: warning: missing AC_FUNC_REALLOC wanted by: 
+	ox.yy.c:2132
+autoscan: warning: missing AC_TYPE_INT16_T wanted by: 
+	ox.yy.c:46
+autoscan: warning: missing AC_TYPE_INT32_T wanted by: 
+	ox.yy.c:48
+autoscan: warning: missing AC_TYPE_INT8_T wanted by: 
+	ox.yy.c:44
+autoscan: warning: missing AC_TYPE_UINT16_T wanted by: 
+	ox.yy.c:47
+autoscan: warning: missing AC_TYPE_UINT32_T wanted by: 
+	ox.yy.c:49
+autoscan: warning: missing AC_TYPE_UINT8_T wanted by: 
+	ox.yy.c:45

@@ -26,17 +26,7 @@ typedef struct hiena_parse_packet_addr	  addr_t;
 typedef int    				  Htok_t;
 
 
-list_t *new_list      ( list_t * );
-list_t *new_list_t    ( void * );
-int     list_t_cleanup( list_t * );
-int	list_verify   ( list_t * );
-list_t *list_get_next ( list_t * );
-void    list_set_ob   ( list_t *, void *ob );
-void   *list_get_ob   ( list_t * );
-int     list_t_add_ob ( list_t *, void *ob );
-void   *list_get_match( list_t *, int(*)(void *, void *), void * );
-void    list_cleanup_all( list_t *, void(*)(void *) );
-int     list_t_cleanup_garbage( list_t * );
+#include "list_t"
 
 bounds_t *new_bounds         ( int );
 int       bounds_cleanup     ( bounds_t * );
@@ -142,38 +132,7 @@ void     ppak_set_storage_updated( Ppak *, int );
 int      ppak_refresh            ( Ppak *, Axpa *a, Hsp *h );
 
 
-/*== OBJECT: bounds_t ==*/
-
-typedef off_t boundslen_t;
-
-typedef struct ppak_bound_element boundl;
-struct ppak_bound_element
-{
-    int   axis;
-    boundslen_t offset;
-    boundslen_t len;
-};
-
-enum bound_cmp_status
-{
-    BNDS_SAME, BNDS_INSIDE, BNDS_OUTSIDE, BNDS_INTERSECT, BNDS_DIFF
-};
-
-struct ppak_bounds_ob {
-    int     c;      /* num array elements */
-    boundl *a;      /* array of boundry axi */
-    int     pointmatch; /*{ $$ = 0 if no matching performed yet,
-			         1 if all offsets have matched so far,
-				 2 if one or more offsets have not matched
-			}*/
-    int     status; /* status from bounds_cmp()
-    		          'i' inside
-		          'o' outside
-		          '=' exact match
-		    */
-};
-/*--------*/
-
+#include "bounds_t.h"
 
 /*== INLINE INCLUDE: dpakstream.h ==*/
 #include "dpakstream.h"
@@ -208,14 +167,7 @@ typedef struct dpak_write_cell
 
 /*== STRUCTURES: parse packet ==*/
 
-typedef struct ppak_list_element list_t;
-struct ppak_list_element
-{
-    list_t *prev;
-    list_t *next;
-
-    void *ob;
-};
+#include "list_t.h"
 
 typedef struct hiena_parse_packet_domain_location Ppbounds;
 typedef struct hiena_parse_packet_domain_location

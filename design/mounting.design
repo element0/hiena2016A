@@ -1,0 +1,116 @@
+== Mounting the Snafu Drive ==
+
+Snafu is...
+    cosmoS
+    hieNA
+    FUdge
+
+--------
+
+
+== Setup ==
+
+/usr/local/bin/
+	snafu
+	gridhost
+
+/usr/local/lib/
+	gridhost/
+		hiena/
+		    lookup/
+		    scanners/
+		    servers/
+		cosmos/
+
+/usr/local/etc/
+	snafu/
+		_cosm/
+		    config/
+		    devices/
+		    flows/
+		    tools/
+		    types/
+		    users/
+			
+{mountpoint}/
+	.cosm/
+		config/
+		devices/
+		flows/
+		tools/
+		types/
+		users/
+
+{mountpoint}/.cosm/devices/bangfish/
+	snafu/
+		mountpath
+		gridnode
+		tmp
+		storage
+	http/
+	ssh/
+
+{mountpoint}/.cosm/devices/bangbook/
+	snafu/
+		mountpath
+		gridnode
+		tmp
+		storage
+	http/
+	ssh/
+
+
+
+
+--------
+
+
+
+== Mounting a "Snafu Drive" ==
+
+MOUNTPOINT=file:///home/raygan
+
+snafufs $MOUNTPOINT
+
+---
+
+load snafufs modules
+	lookup
+		fudge
+	servers
+		file
+
+load proto-cosm
+	// loads tools, types
+
+create root domain cell
+	source = $MOUNTPOINT
+	production instruction = "source_producer source"
+	exec( production instruction ) --> root domain cell
+
+load root cosm
+	get_child( root domain cell, "[_.]cosm" )
+
+
+
+/usr/bin/snafugrid start $MOUNTPOINT/$COSMNAME/devices/$HOSTNAME/snafu/gridnode
+
+
+
+
+
+
+
+
+instantiate fuse session
+run fuse session loop
+
+
+
+
+
+--------
+
+
+
+

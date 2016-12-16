@@ -25,3 +25,10 @@ grammars.  So, firstly, it saves space, secondly, it allows a grammar
 to include another by reference, without redefining the grammar,
    and as a consequence, rules can be updated independently of the entire grammar.
 
+
+sslib.c
+-------
+
+types:
+    typedef struct hiena_scannerlib scanlib;
+    typedef struct hiena_scannerserver scannerserver;

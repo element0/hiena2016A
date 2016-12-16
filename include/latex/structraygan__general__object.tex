@@ -1,0 +1,50 @@
+\hypertarget{structraygan__general__object}{\section{raygan\+\_\+general\+\_\+object Struct Reference}
+\label{structraygan__general__object}\index{raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}}
+}
+
+
+{\ttfamily \#include $<$gob.\+h$>$}
+
+\subsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \hyperlink{structraygan__general__object_aa8f4b6b7ad65fa40342f28c9ce30cb6b}{prev}
+\item 
+void $\ast$ \hyperlink{structraygan__general__object_abca7656e199e85edfa1304150cb2d7d9}{next}
+\item 
+void $\ast$ \hyperlink{structraygan__general__object_a571269e726fb52755234c73b02ad9ea8}{prevgarb}
+\item 
+void $\ast$ \hyperlink{structraygan__general__object_a97be0f07a3b6afe858c5c6ba8f3e1987}{nextgarb}
+\item 
+void($\ast$ \hyperlink{structraygan__general__object_aa4c5799d4485b20618b80d670c55b598}{cleanup} )(void $\ast$)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Subclass this object by making it the first data field in a structure or by making a subclass of this object the first data field in a structure.
+
+This object provides for a doubly linked list and for a doubly linked garbage collection chain. The two are not the same...
+
+A\+C\+C\+E\+S\+S\+O\+R M\+E\+T\+H\+O\+D\+S\+: None. Keep it simple and just dereference after typecasting your own subclassed object to a gob. 
+
+\subsection{Field Documentation}
+\hypertarget{structraygan__general__object_aa4c5799d4485b20618b80d670c55b598}{\index{raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}!cleanup@{cleanup}}
+\index{cleanup@{cleanup}!raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}}
+\subsubsection[{cleanup}]{\setlength{\rightskip}{0pt plus 5cm}void($\ast$ raygan\+\_\+general\+\_\+object\+::cleanup)(void $\ast$)}}\label{structraygan__general__object_aa4c5799d4485b20618b80d670c55b598}
+cleanup function for custom object \hypertarget{structraygan__general__object_abca7656e199e85edfa1304150cb2d7d9}{\index{raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}!next@{next}}
+\index{next@{next}!raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}}
+\subsubsection[{next}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ raygan\+\_\+general\+\_\+object\+::next}}\label{structraygan__general__object_abca7656e199e85edfa1304150cb2d7d9}
+linked list stub \hypertarget{structraygan__general__object_a97be0f07a3b6afe858c5c6ba8f3e1987}{\index{raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}!nextgarb@{nextgarb}}
+\index{nextgarb@{nextgarb}!raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}}
+\subsubsection[{nextgarb}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ raygan\+\_\+general\+\_\+object\+::nextgarb}}\label{structraygan__general__object_a97be0f07a3b6afe858c5c6ba8f3e1987}
+garbage collector stub \hypertarget{structraygan__general__object_aa8f4b6b7ad65fa40342f28c9ce30cb6b}{\index{raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}!prev@{prev}}
+\index{prev@{prev}!raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}}
+\subsubsection[{prev}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ raygan\+\_\+general\+\_\+object\+::prev}}\label{structraygan__general__object_aa8f4b6b7ad65fa40342f28c9ce30cb6b}
+linked list stub \hypertarget{structraygan__general__object_a571269e726fb52755234c73b02ad9ea8}{\index{raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}!prevgarb@{prevgarb}}
+\index{prevgarb@{prevgarb}!raygan\+\_\+general\+\_\+object@{raygan\+\_\+general\+\_\+object}}
+\subsubsection[{prevgarb}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ raygan\+\_\+general\+\_\+object\+::prevgarb}}\label{structraygan__general__object_a571269e726fb52755234c73b02ad9ea8}
+garbage collector stub 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{gob_8h}{gob.\+h}\end{DoxyCompactItemize}

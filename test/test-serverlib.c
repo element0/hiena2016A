@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "../progconf/paths.h"
 #include <gob.c>
-#include "../src/serverlib.c"
+#include "../src/sourcelib.c"
 
 
 int main ( int argc, char *argv[] ) {

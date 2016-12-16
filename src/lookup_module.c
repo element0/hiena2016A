@@ -36,13 +36,13 @@ static int lookup_module_load ( const char * filename, void * data ) {
     if( hlm->handle != NULL ) return 0;
 
 #if HAVE_LTDL_H
-    printf("DEBUG: lookup_module_load to load %s\n", filename);
 
     lt_dlhandle module = lt_dlopenext( filename );
     if( module == NULL ) {
 	printf("hiena can't load %s\n", filename );
 	return -1;
     }
+    printf("lookup_module_load: loaded %s\n", filename);
 
 
     hlm->handle = module;
@@ -123,4 +123,12 @@ void lookup_module_cleanup ( void * ptr ) {
     free( hlm );
 }
 
+struct hiena_lookup_ops * lookup_module_get_ops ( struct hiena_lookup_module * lumod ) {
+    if( lumod == NULL ) return NULL;
+    return lumod->ops;
+}
 
+struct hiena_lookup_callbacks * lookup_module_get_callbacks ( struct hiena_lookup_module * lumod ) {
+    if( lumod == NULL ) return NULL;
+    return lumod->callbacks;
+}

@@ -1,0 +1,493 @@
+== Hiena/ Grid Design ==
+--------
+
+
+
+
+== Reference:  Raygan's "Echonet" ==
+
+.-------------------------------------------.
+| open wireless mesh using 1 or more SSIDs  |				-- [ OSI 1. physical; 2. link ]
+'-------------------------------------------'
+.-----------------.
+| packet flooding |
+'-----------------'
+.------------------------------------------------.
+| decryptibility determines virtual LAN identity |			-- [ OSI 3. network ]
+'------------------------------------------------'
+.-------------------------------------------------.
+| decryptibility further determines node identity |
+'-------------------------------------------------'
+.-------------------------------------------------------------.
+| after decryption, packets are parsed by the transport layer |		-- [ OSI 4. transport ]
+'-------------------------------------------------------------'
+.----------------------------.
+| echonet services interface |						-- [ OSI 5,6,7 ]
+'----------------------------'
+
+--------
+
+
+== Architecture:  Mesh Computer  "Cozumel"  ==
+
+ ...
+
+[ OSI 3. network layer ]
+
+.--------------------------------.
+| IP address of grid node  | ... |
+'--------------------------------'
+
+
+[ OSI 4. transport layer ]
+ ...
+
+[ OSI 5. session ]
+
+.------------------------------. .--------------------------.
+| Internet Domain socket | ... | | Unix Domain socket | ... |
+'------------------------------' '--------------------------'
+
+
+[ OSI 6. presentation ]
+
+ -- I've filed this under "presentation" layer b/c I feel like these functions
+    hide the inner workings of the grid, and "present" a single representation
+    to the Application Layer.  I also feel that these functions can easily use
+    domain sockets which encapsulate actual network session.
+
+.----------------------------.
+| grid routing table         |
+:----------------------------------------------------------------------------.
+| - dynamic nearest-neighbor routes based on latency & quality triangulation |
+| - number of routes constrained by triangle poligon rules                   |
+| - transient device re-route via addr changelog and neighbor reports        |
+'----------------------------------------------------------------------------'
+
+.-------------.
+| data queues |
+:-------------------------------------------------------.
+| - to and from nodes in the grid routing table		|
+| - to and from local persistent cache			|
+| - to and from local backing store			|
+| - to and from non-snafu addresses via "flows" config  |
+'-------------------------------------------------------'
+
+.--------------------.
+| instruction queues |
+:-------------------------------------------------------.
+| - to and from nodes in the grid routing table		|
+'-------------------------------------------------------'
+
+.--------------------.
+| data routing table |
+:-----------------------------------------------------------------------.
+| - based on "flows" config						|
+| - unconstrained to grid routing table, refers to any address		|
+| - snafu protocol addresses ARE constrained to grid routing table      |
+| - used to build data queue						|
+| - used to balance backing store					|
+| - used to balance cache						|
+'-----------------------------------------------------------------------'
+
+
+[ OSI 7. application ]
+
+.-----------------------.
+| snafu protocol        |	-- snafu://{host}/{dataset}/{object}
+'-----------------------'
+
+
+[ Process ]
+
+.------------------. .--------------------------.
+| grid config file | | data "flows" config file |
+'------------------' '--------------------------'
+ ---
+.------------------------. .------------------------. .----------------------. .------------------------.
+| grid instance file     | | local persistent cache | | local object storage | | local variable storage |
+'------------------------' '------------------------' '----------------------' '------------------------'
+ ---
+.--------------------. .---------------------------.
+| data object format | | instruction object format |
+'--------------------' '---------------------------'
+ ---
+.------------------------------. .------------------------------.
+| grid virtual machine process | | grid virtual machine session |
+'------------------------------' '------------------------------'
+
+
+--------
+
+
+
+== Architecture ==
+
+
+.------------------.
+| gridhost process |
+'------------------'
+.-------------------.
+| grid object | ... |
+'-------------------'
+.----------------------. .---------------. .---------.
+| dataset object | ... | | object store  | | grid VM |
+'----------------------' '---------------' '---------'
+.-------------------.                      .----------------------------.
+| data object | ... |                      | grid virtual process | ... |
+'-------------------'                      '----------------------------'
+                                           .-------------------------------------------.
+                                           | pending instruction request process | ... |
+                                           '-------------------------------------------'
+ ---
+.--------------------.
+| grid program | ... |
+'--------------------'
+.--------------------------------.
+| grid instruction request | ... |
+'--------------------------------'
+
+
+--------
+
+
+
+== Grid Storage ==
+
+Object Storage.
+
+Each Grid Node Object has a connection to a Object Storage.
+This connection is implemented through a dynamic module.
+Ideas for module implementations are "kyoto cabinet" or "ceph".
+
+Object Storage is useful for storing hiena file system metadata
+such as sources.  It's also useful for storing user data.
+
+Object Storage is distributed accross the grid.  Algorithms
+can cluster the objects around activity zones.
+
+
+Persistent Cache.
+
+Useful for keeping working state in the event of a node failure.
+
+
+Local Variable Storage.
+
+This is a syncronized state available to all nodes.
+If a grid instruction writes its result to a local variable
+it will be available on all nodes.
+
+
+--------
+
+
+
+== Grid Instructions ==
+
+
+a programmer uses the grid API to send instructions to the grid.
+
+grid instructions can be chained to form a program.
+
+the programmer can send or request an execution 'frame' for the program.
+the execution frame keeps local variables -- like a function stack frame.
+
+the grid instruction must have the following
+	-- executible/function name
+	-- data set expression
+	-- destination for result
+
+a language implementation might look like:
+
+	count_hosts_up( 192\.168\.[0-255]\.[0-255] ) --> num_hosts_up
+
+where the executible name is 'count_hosts_up', the data set expression is an RE 
+generating a range of IP addresses, and the destination for the result is 'num_hosts_up'
+
+the destination can be a local variable or a storage data set.
+the local variable will be available to all participating nodes upon
+successful instruction completion.
+a storage data set will file the value into the data set 
+and it may get migrated to other Object Storage elsewhere on the network.
+
+
+--------
+
+== Grid Programming: Scripting ==
+
+a grid program can be a regular script language script
+shell, python, javascript, awk, etc
+with the addition of grid macros.
+
+the grid macros specify an 'command', a 'dataset', an 'expression'
+and a 'result identifier' destination.
+
+command is a binary or builtin which all nodes of the same grid are expected to have.
+
+dataset is one of the named datasets written to the grid by the user.
+
+expression is an RE.
+
+result identifier is a variable name or data set and object name on the grid node where the result
+will be stored.
+
+the macro will be converted into a Grid Instruction Request outside the script
+a Request Trigger outside the script, which when activated will execute the request
+and a Trigger Reference from within the script, which will activate the trigger
+during normal processing of the script by its conventional binary.
+
+NOTE:  a grid instruction expands to a series of executions,
+    the collective result is returned as the value of the Trigger Reference,
+    and is saved for future use as a 'result identifier' on the grid node.
+
+
+The entire script is propogated through the grid under a single program ID.
+The program ID is generated from the script and execution context at the time
+it is submitted.
+
+
+--------
+
+
+== Instruction Submission and Approval Process ==
+
+A single grid node may not have the compute power to process the instruction in a timely manner.
+
+The instruction must be evaluated for resource requirements before being queue'd for execution.  If there are not enough nodes to fulfill the instruction an error is returned.
+
+--------
+
+
+
+== Sample Implementation ==
+
+A possible configuration would look like this.
+
+Raygan's Computer
+Nathan's Computer
+
+each runs a Grid Process
+
+Raygan and Nathan create "Warped Nuts" grid.
+
+Raygan's Grid Configuration:
+	add host Nathan's Computer
+	set backing store ceph ...
+
+Nathan's Configuration:
+	add host Raygan's Computer
+	set backing store ceph ...
+
+(Note: there would be a ceph configuration outside the scope of this example.)
+
+
+An example use of the grid:
+
+Raygan inputs a Grid Instruction Request
+	result = echo( [a-z][10-20] )
+
+On the input node the instruction is broken into instructions
+for the number of adjancent nodes.
+
+	0,0: result = echo( [a-z][10-20] )	// master
+	0,1: result = echo( [a-m][10-15] )	// node 1
+	0,2: result = echo( [n-z][16-20] )	// node 2
+
+Then node 1 is passed instructions 0,1
+node 2 is passed instructions 0,2
+(both instructions are passed with routing header as described further below)
+
+node 1 expands the RE from instruction 1
+and store each expansion in result (as an array)
+result is returned along the routing line as a value for part 0,1
+
+node 2 expands the RE from instruction 2
+and stores each expansion in result (as an array)
+result is returned along the routing line as a value for part 0,2
+
+when all parts have been returned, the parts are combined
+the merged result is broadcast back to the nodes as result for 0,0
+
+now the instruction request has been filled
+the instruction queue is empty
+and each node now has an array named 'result'
+containing the expansion of [a-z][10-20]
+
+-- part II
+
+Raygan inputs a Grid Instruction request
+	dataset( result ) = result
+
+This tells the grid to create a dataset named "result"
+and to populate the dataset with the contents of the array "result".
+
+	0,0: dataset( result ) = result
+	0,1: dataset( result ) = result[0-{HALFWAY}]
+	0,2: dataset( result ) = result[{HALFWAY}-{LAST}]
+
+Because the configurations both use ceph as a backing store,
+there will be a ceph "pool" called "result"
+which will receive the inputs from both 0,1 and 0,2
+and very well may combine the data into the same node.
+
+However, using ceph will have the benifit of its built in
+housekeeping functions and high-availability.
+
+Using Raygan's Grid system will have the benefit of division of labor.
+
+-- revision I
+
+the entire operation could be revised:
+	dataset( result ) = echo( [a-z][10-20] )
+
+-- other examples
+
+queries can be performed on a dataset:
+
+	query_output = find( '[ax]+.*', dataset( result ) )
+
+above divides dataset( result ) among adjacent nodes
+and runs find( '[ax]+.*' ) on each set
+query_output will be available to each node
+
+
+elements can be added to a dataset
+	put( dataset( result ), item )
+
+this does not follow the Grid Instruction Request algo,
+     but rather inserts 'item' into 'result' locally
+     and then follows the grid 'flow' definitions to propogate the information.
+
+--------
+
+
+
+
+
+== Routing:  Dynamic Next-Neighbor Only  "Soup Router"  ==
+
+--
+
+   1
+
+--
+
+   1 --- 1	each refers to other as "connection 1"
+
+
+--
+
+   1 --- 1,2	one of the nodes adds a third
+    \   /	each refers to the new one as "connection 2"
+     \ /	
+      2		connection 2 must label one of them its "connection 2"
+
+--
+
+    1 --- 1,2	connection 2 adds another node shared by its connection 2
+     \   / \    connection 2's connection 3
+      \ /   \   connection 1,2's connection 3
+       2 --- 3
+
+--
+
+   1* --- 1,2	connection 1 changed, connection 1,2 tells connection 2 "my connection 1 changed thusly..."
+     \   / \ 		
+      \ /   \ 
+       2 --- 3  connection 2 also receives a signal from connection 1 and it matches what 1,2 told it.
+
+
+       request id:
+       persp 1,2:	1;2"1"
+       persp 2:		1;1,2"1"
+
+       as it propogates
+
+       persp 3:		1,2;2"1,2"
+
+--
+    3,4,2 -- 3,6,1		each node contributes to the other's adjacents name upon linking
+      / \   / \
+     /   \ /   \
+   1* -- 1,2 - 5,3
+     \   / \   /
+      \ /   \ /
+       2 --- 3
+
+--
+
+
+    3,4,2 -- 3,6,1 
+      / \   / \
+     /   \ /   \
+   1* -- 1,2 - 5,3		1	a fresh node appears, but has yet to be connected
+     \   / \   /
+      \ /   \ /
+       2 --- 3
+
+
+--
+
+
+    3,4,2 -- 3,6,1          2
+      / \   / \            / \
+     /   \ /   \          /   \
+   1* -- 1,2 - 5,3      1,2 -- 1	more nodes are added to the fresh pattern
+     \   / \   /
+      \ /   \ /
+       2 --- 3
+
+
+--
+
+    3,4,2 -- 3,6,1          2
+      / \   / \            / \
+     /   \ /   \          /   \
+   1* -- 1,2 - 5,3 -- 4,1,2 -- 1	one of the nodes is connected, and receives a name effect
+     \   / \   /
+      \ /   \ /
+       2 --- 3
+
+--
+
+   3,4,2 - 3,6,1 - 5,4,3 - 2
+      / \   / \   / \    / \
+     /   \ /   \ /   \  /   \
+   1* -- 1,2 - 5,3 - 4,1,2 - 1
+     \   / \   / \   /  \   /
+      \ /   \ /   \ /    \ /
+       2 --- 3 -- 3,5 -- 6,3
+
+--
+
+	when a message is passed, it is passed to all connections
+	when a message is passed, it is passed to the outgoing connection with a reference from the incoming
+	 ie. "hi, I am 5,3.  I am passing a message from 1,2"
+	if the receiver already knows 1,2 it can discard the message
+	  because it will receive a message directly from 1,2. "hi, I am 1,2. I am passing a message from 1."
+
+	the above mentioned message header is used by the node to keep a pending request.
+	the request id should be a hash of the header along with the request body.
+	if the current node can fill the request, then it responds according to the header.
+	   "to 5,3: hi, I am 4,1,2. I am answering the message from 1,2."
+
+	when topology changes, the nodes should be renamed to fit the naming rules,
+	a delta record is created, stating old and new names,
+	   or old name and which connection to follow in the direction of the node movement.
+	and the old names and connections should be kept as further identifying material
+	   until all pending requests using those old connections are resolved.
+
+	the changes can propogate accross the net if each node
+		a) passes the change to the next
+		b) doesn't pass the change back
+		c) passes the knowledge of which other adjacents have also received it
+		d) doesn't pass the change to those other acknowledging adjacents
+
+	the identity of the change or request is known by
+		a) the body of the change / request
+		b) the source adjacents
+
+	node names can repeat but not when they are adjacent, nor when they are 1 removed
+
+--------

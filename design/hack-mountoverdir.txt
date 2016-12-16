@@ -1,0 +1,30 @@
+== HACK:  mount over dir ==
+
+--------
+
+
+== DESCRIPTION: ==
+
+Is it possible to use a directory as source
+for a mountpoint over directory.
+
+SOURCE="/home/raygan"
+MOUNTPOINT= "/home/raygan"
+
+--------
+
+== EVALUATION TEST: ==
+
+We need to know if we can open SOURCE for reading and writing.
+	and if we can access ALL its subdirectories and files.
+	--
+	create a file crawler
+
+At the same time we mount a FUSE filespace (of any make and model)
+    	over the MOUNTPOINT
+	and access its contents
+	--
+	use sshfs to mount a different directory from the localhost
+
+
+--------
